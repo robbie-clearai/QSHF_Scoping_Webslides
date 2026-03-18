@@ -149,7 +149,7 @@ function WhiteSlide({ children, section }) {
 function S00() {
   return (
     <div style={{
-      width: '100%', height: '100%',
+      width: '100%', minHeight: 'calc(100vh - 104px)',
       background: C.obsidian,
       display: 'flex', flexDirection: 'column',
       padding: '40px 56px',
@@ -956,7 +956,7 @@ function S09() {
 function S10() {
   return (
     <div style={{
-      width: '100%', height: '100%',
+      width: '100%', minHeight: 'calc(100vh - 104px)',
       background: C.obsidian,
       display: 'flex', flexDirection: 'column',
       padding: '40px 56px',
