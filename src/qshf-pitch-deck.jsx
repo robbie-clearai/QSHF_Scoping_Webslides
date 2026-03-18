@@ -750,50 +750,129 @@ function S07({ calc }) {
   )
 }
 
-/* ── SLIDE 8: INVESTMENT (dynamic) ── */
+/* ── SLIDE 8: INVESTMENT — THREE PROPOSALS ── */
 function S08({ calc }) {
   const d = derive(calc)
-  const rows = [
-    ['Development of Full Solution', '$93,750', 'Weeks 1–6'],
-    ['Ongoing API & Hosting', '$1,339 / year', 'From go-live'],
-    ['Annual Maintenance', '$3,000 / year', 'From go-live'],
+  const baseSaving = d.scenarios[1].annualSaving
+
+  const proposals = [
+    {
+      num: 'Proposal 1',
+      name: 'Essential',
+      tag: 'Core functionality',
+      devCost: 38000,
+      apiCost: 450,
+      maintCost: 1500,
+      features: [
+        'MS Access database integration',
+        'Copy check across 8 key dimensions',
+        'Top 1 match result with change summary',
+        'Basic PDF upload web interface',
+        'Weekly scheduled database sync',
+        'Email delivery of match results',
+      ],
+    },
+    {
+      num: 'Proposal 2',
+      name: 'Core',
+      tag: 'Recommended',
+      devCost: 62000,
+      apiCost: 1339,
+      maintCost: 3000,
+      features: [
+        'MS Access database integration',
+        'Full 15-factor weighted AI scoring',
+        'Top 3 match results with full change lists',
+        'Real-time database sync',
+        'Clean web dashboard with PDF upload',
+        'Drafter training & onboarding',
+      ],
+    },
+    {
+      num: 'Proposal 3',
+      name: 'Enterprise',
+      tag: 'Full feature set',
+      devCost: 95000,
+      apiCost: 1800,
+      maintCost: 5000,
+      features: [
+        'Everything in Proposal 2',
+        'Automated new-job notifications',
+        'Analytics dashboard & reporting',
+        'Drafter feedback loop to improve accuracy',
+        'Role-based access control',
+        'Priority support & quarterly reviews',
+      ],
+    },
   ]
+
   return (
     <Wrap justify="flex-start">
       <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>The Solution</div>
       <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
-      <div style={{ fontFamily: F.main, fontSize: '26px', color: C.obsidian, marginBottom: '24px' }}>Investment Required</div>
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '28px' }}>
-        <thead>
-          <tr>
-            {['Component', 'Amount (ex-GST)', 'Timing'].map((h, i) => (
-              <th key={i} style={{ padding: '10px 16px', background: C.obsidian, fontFamily: F.main, fontSize: '10px', letterSpacing: '1.5px', color: C.parchment, textAlign: i === 0 ? 'left' : 'right', textTransform: 'uppercase' }}>{h}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map(([label, amount, timing], i) => (
-            <tr key={i} style={{ borderBottom: '1px solid rgba(34,25,12,0.09)', background: i % 2 === 0 ? C.parchment : C.mid }}>
-              <td style={{ padding: '13px 16px', fontFamily: F.main, fontSize: '15px', color: C.obsidian }}>{label}</td>
-              <td style={{ padding: '13px 16px', fontFamily: F.main, fontSize: '14px', color: C.clay, textAlign: 'right', fontWeight: 700 }}>{amount}</td>
-              <td style={{ padding: '13px 16px', fontFamily: F.main, fontSize: '14px', color: C.obsidian, opacity: 0.65, textAlign: 'right' }}>{timing}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div style={{ display: 'flex', gap: '16px' }}>
-        <div style={{ flex: 1, background: C.clay, borderRadius: '4px', padding: '20px 22px' }}>
-          <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '2px', color: 'rgba(244,240,237,0.6)', marginBottom: '6px' }}>TOTAL YEAR 1</div>
-          <div style={{ fontFamily: F.main, fontSize: '26px', color: C.parchment }}>${Math.round(d.totalYear1).toLocaleString()}</div>
-        </div>
-        <div style={{ flex: 1, background: C.mid, borderRadius: '4px', padding: '20px 22px' }}>
-          <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '2px', color: C.clay, marginBottom: '6px' }}>TOTAL YEAR 2+</div>
-          <div style={{ fontFamily: F.main, fontSize: '26px', color: C.obsidian }}>${Math.round(d.totalYear2Plus).toLocaleString()}</div>
-        </div>
-        <div style={{ flex: 1, background: C.mid, borderRadius: '4px', padding: '20px 22px' }}>
-          <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '2px', color: C.clay, marginBottom: '6px' }}>BASE CASE PAYBACK</div>
-          <div style={{ fontFamily: F.main, fontSize: '26px', color: C.obsidian }}>{d.scenarios[1].paybackMonths.toFixed(1)} months</div>
-        </div>
+      <div style={{ fontFamily: F.main, fontSize: '22px', color: C.obsidian, marginBottom: '18px' }}>Investment Required</div>
+      <div style={{ display: 'flex', gap: '16px', flex: 1 }}>
+        {proposals.map((p) => {
+          const isRec = p.num === 'Proposal 2'
+          const totalY1 = p.devCost + p.apiCost + p.maintCost
+          const totalY2 = p.apiCost + p.maintCost
+          const payback = (totalY1 / baseSaving * 12).toFixed(1)
+          return (
+            <div key={p.num} style={{
+              flex: 1,
+              background: isRec ? C.clay : C.mid,
+              borderRadius: '6px',
+              padding: '20px 18px',
+              display: 'flex',
+              flexDirection: 'column',
+              position: 'relative',
+            }}>
+              {isRec && (
+                <div style={{ position: 'absolute', top: '-11px', left: '18px', background: C.red, borderRadius: '3px', padding: '2px 10px', fontFamily: F.main, fontSize: '9px', letterSpacing: '2px', color: C.parchment, textTransform: 'uppercase' }}>
+                  Recommended
+                </div>
+              )}
+              <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '2px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay, textTransform: 'uppercase', marginBottom: '2px' }}>{p.num}</div>
+              <div style={{ fontFamily: F.main, fontSize: '20px', color: isRec ? C.parchment : C.obsidian, marginBottom: '4px' }}>{p.name}</div>
+              <div style={{ height: '1px', background: isRec ? 'rgba(244,240,237,0.2)' : 'rgba(34,25,12,0.12)', margin: '10px 0' }} />
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '5px', marginBottom: '14px' }}>
+                {p.features.map((f, i) => (
+                  <div key={i} style={{ display: 'flex', gap: '7px', alignItems: 'flex-start' }}>
+                    <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: isRec ? 'rgba(244,240,237,0.6)' : C.clay, marginTop: '6px', flexShrink: 0 }} />
+                    <div style={{ fontFamily: F.main, fontSize: '11px', color: isRec ? 'rgba(244,240,237,0.85)' : C.obsidian, lineHeight: 1.4 }}>{f}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ height: '1px', background: isRec ? 'rgba(244,240,237,0.2)' : 'rgba(34,25,12,0.12)', marginBottom: '12px' }} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px' }}>
+                {[
+                  ['Development', `$${p.devCost.toLocaleString()}`, 'Weeks 1–6'],
+                  ['API & Hosting', `$${p.apiCost.toLocaleString()} / yr`, 'From go-live'],
+                  ['Maintenance', `$${p.maintCost.toLocaleString()} / yr`, 'From go-live'],
+                ].map(([label, val, timing], i) => (
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                    <span style={{ fontFamily: F.main, fontSize: '10px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay }}>{label}</span>
+                    <span style={{ fontFamily: F.main, fontSize: '11px', color: isRec ? C.parchment : C.obsidian, fontWeight: 700 }}>{val}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ background: isRec ? 'rgba(244,240,237,0.15)' : 'rgba(34,25,12,0.08)', borderRadius: '4px', padding: '10px 12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
+                  <span style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay, textTransform: 'uppercase' }}>Year 1 Total</span>
+                  <span style={{ fontFamily: F.main, fontSize: '18px', color: isRec ? C.parchment : C.obsidian }}>${totalY1.toLocaleString()}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
+                  <span style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay, textTransform: 'uppercase' }}>Year 2+</span>
+                  <span style={{ fontFamily: F.main, fontSize: '13px', color: isRec ? 'rgba(244,240,237,0.75)' : C.clay }}>${totalY2.toLocaleString()} / yr</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                  <span style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay, textTransform: 'uppercase' }}>Base Payback</span>
+                  <span style={{ fontFamily: F.main, fontSize: '13px', color: isRec ? 'rgba(244,240,237,0.75)' : C.clay }}>{payback} mo</span>
+                </div>
+              </div>
+            </div>
+          )
+        })}
       </div>
     </Wrap>
   )
