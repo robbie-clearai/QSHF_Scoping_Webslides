@@ -1,117 +1,60 @@
 import { useState, useRef, useCallback } from 'react'
-import html2canvas from 'html2canvas'
-import MaturityRadar from './maturity-radar'
-import PrioritisationMatrix from './prioritisation-matrix'
-import TechRadar from './tech-radar'
-import SwimLaneRoadmap from './swim-lane-roadmap'
 import QSHFPitchDeck from './qshf-pitch-deck'
 
-const visuals = [
-  { id: 'radar', name: 'Maturity Radar', component: MaturityRadar },
-  { id: 'matrix', name: '2x2 Prioritisation', component: PrioritisationMatrix },
-  { id: 'tech', name: 'Technology Radar', component: TechRadar },
-  { id: 'roadmap', name: 'Swim-Lane Roadmap', component: SwimLaneRoadmap },
-]
-
 export default function App() {
-  const [active, setActive] = useState('pitch')
-  const isPitch = active === 'pitch'
-  const [exporting, setExporting] = useState(false)
-  const contentRef = useRef(null)
-  const ActiveComponent = visuals.find(v => v.id === active)?.component
-  const activeName = visuals.find(v => v.id === active)?.name || 'visual'
+  const [pdfExporting, setPdfExporting] = useState(false)
+  const pitchDeckRef = useRef(null)
 
-  const handleExport = useCallback(async () => {
-    if (!contentRef.current || exporting) return
-    setExporting(true)
+  const handleExportPDF = useCallback(async () => {
+    if (!pitchDeckRef.current || pdfExporting) return
+    setPdfExporting(true)
     try {
-      const canvas = await html2canvas(contentRef.current, {
-        backgroundColor: '#F4F0ED',
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      })
-      const link = document.createElement('a')
-      link.download = `yajilarra-${active}-${new Date().toISOString().slice(0, 10)}.png`
-      link.href = canvas.toDataURL('image/png')
-      link.click()
-    } catch (err) {
-      console.error('Export failed:', err)
+      await pitchDeckRef.current.exportPDF()
     } finally {
-      setExporting(false)
+      setPdfExporting(false)
     }
-  }, [active, exporting])
-
-  const handleExportSVG = useCallback(() => {
-    if (!contentRef.current) return
-    const svgEl = contentRef.current.querySelector('svg')
-    if (!svgEl) return
-
-    // Clone the SVG so we don't mutate the DOM
-    const clone = svgEl.cloneNode(true)
-    const viewBox = clone.getAttribute('viewBox')
-    const [, , vbW, vbH] = (viewBox || '0 0 800 700').split(' ').map(Number)
-
-    // Set explicit dimensions for Figma
-    clone.setAttribute('width', vbW)
-    clone.setAttribute('height', vbH)
-    clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
-
-    // Add parchment background as first child
-    const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
-    bg.setAttribute('width', '100%')
-    bg.setAttribute('height', '100%')
-    bg.setAttribute('fill', '#F4F0ED')
-    clone.insertBefore(bg, clone.firstChild)
-
-    // Add font definitions so text renders correctly
-    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs')
-    const styleEl = document.createElementNS('http://www.w3.org/2000/svg', 'style')
-    styleEl.textContent = ``
-    defs.appendChild(styleEl)
-    clone.insertBefore(defs, clone.firstChild)
-
-    // Remove any interactive elements (hover zones, tooltips with pointerEvents)
-    clone.querySelectorAll('[style*="pointer-events: none"]').forEach(el => el.remove())
-    // Remove invisible hover zones
-    clone.querySelectorAll('path[fill="transparent"]').forEach(el => el.remove())
-
-    // Serialize
-    const serializer = new XMLSerializer()
-    const svgString = serializer.serializeToString(clone)
-    const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-
-    const link = document.createElement('a')
-    link.download = `yajilarra-${active}-${new Date().toISOString().slice(0, 10)}.svg`
-    link.href = url
-    link.click()
-    URL.revokeObjectURL(url)
-  }, [active])
+  }, [pdfExporting])
 
   return (
     <div style={{ fontFamily: "'Thorndale AMT Regular', 'Thorndale AMT', 'Times New Roman', serif", background: '#FFFFFF', minHeight: '100vh' }}>
       <div style={{
-        display: 'flex',
-        gap: '2px',
-        padding: '16px 24px',
+        display: 'grid',
+        gridTemplateColumns: '1fr auto 1fr',
+        alignItems: 'center',
+        padding: '0 24px',
+        height: '52px',
         background: '#22190C',
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        alignItems: 'center',
       }}>
-        <div style={{ color: '#F4F0ED', fontWeight: 700, fontSize: '14px', marginRight: '24px', display: 'flex', alignItems: 'center' }}>
+        <div style={{ color: '#F4F0ED', fontWeight: 700, fontSize: '13px' }}>
           QSHF - Drafting Copy Agent
         </div>
-      </div>
-      {isPitch ? (
-        <QSHFPitchDeck />
-      ) : (
-        <div ref={contentRef} style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
-          {ActiveComponent && <ActiveComponent />}
+        <div style={{ color: '#F4F0ED', fontSize: '14px', letterSpacing: '0.02em' }}>
+          Clear<em>AI</em> Webslides
         </div>
-      )}
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <button
+            onClick={handleExportPDF}
+            disabled={pdfExporting}
+            style={{
+              fontFamily: "'Thorndale AMT Regular', 'Thorndale AMT', 'Times New Roman', serif",
+              fontSize: '13px',
+              background: pdfExporting ? 'rgba(244,240,237,0.15)' : 'rgba(244,240,237,0.1)',
+              color: '#F4F0ED',
+              border: '1px solid rgba(244,240,237,0.35)',
+              borderRadius: '4px',
+              padding: '6px 16px',
+              cursor: pdfExporting ? 'not-allowed' : 'pointer',
+              opacity: pdfExporting ? 0.6 : 1,
+            }}
+          >
+            {pdfExporting ? 'Exporting…' : 'Export PDF'}
+          </button>
+        </div>
+      </div>
+      <QSHFPitchDeck ref={pitchDeckRef} />
     </div>
   )
 }
