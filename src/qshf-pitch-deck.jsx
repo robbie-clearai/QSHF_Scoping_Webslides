@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react'
+import html2canvas from 'html2canvas'
 import calendarImg from './assets/calendar.png'
 import solutionDemoImg from './assets/solution-demo.png'
 
@@ -81,8 +82,8 @@ function Rule({ color = C.clay, op = 0.3, my = 28 }) {
 
 function Wrap({ children, justify = 'flex-start', section = '' }) {
   return (
-    <div style={{ width: '100%', height: '100%', background: C.white, display: 'flex', flexDirection: 'column' }}>
-      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: justify, padding: '44px 56px', boxSizing: 'border-box' }}>
+    <div style={{ width: '100%', minHeight: '100%', background: C.white, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: justify, padding: '44px 56px', boxSizing: 'border-box', minHeight: '560px' }}>
         {children}
       </div>
       <SlideFooter section={section} />
@@ -135,8 +136,8 @@ function SlideFooter({ section }) {
 /* White slide wrapper */
 function WhiteSlide({ children, section }) {
   return (
-    <div style={{ width: '100%', height: '100%', background: C.white, display: 'flex', flexDirection: 'column' }}>
-      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ width: '100%', minHeight: '100%', background: C.white, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: '560px' }}>
         {children}
       </div>
       <SlideFooter section={section} />
@@ -1121,11 +1122,16 @@ function S13() {
 /* ── MAIN COMPONENT ── */
 const SLIDES = [S00, S01, S02, S03, S04, S05, S06, S07, S08, S09, S10, S11, S12, S13]
 
-export default function QSHFPitchDeck() {
+const QSHFPitchDeck = forwardRef(function QSHFPitchDeck(_props, ref) {
   const [slide, setSlide] = useState(0)
   const [animDir, setAnimDir] = useState('right')
   const [animKey, setAnimKey] = useState(0)
   const [calc, setCalc] = useState(DEFAULT_CALC)
+  const [isExporting, setIsExporting] = useState(false)
+  const captureRef = useRef(null)
+  const isExportingRef = useRef(false)
+  const slideValueRef = useRef(0)
+  useEffect(() => { slideValueRef.current = slide }, [slide])
 
   // Keyboard navigation — slide in deps so handler always sees current value
   useEffect(() => {
@@ -1159,6 +1165,36 @@ export default function QSHFPitchDeck() {
     if (n !== slide) { setAnimDir(n > slide ? 'right' : 'left'); setAnimKey(k => k + 1); setSlide(n) }
   }
 
+  const exportPDF = useCallback(async () => {
+    if (isExportingRef.current) return
+    isExportingRef.current = true
+    setIsExporting(true)
+    const originalSlide = slideValueRef.current
+    try {
+      const { jsPDF } = await import('jspdf')
+      const el = captureRef.current
+      const w = el.offsetWidth
+      const h = el.offsetHeight
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [w, h], hotfixes: ['px_scaling'] })
+      for (let i = 0; i < TOTAL; i++) {
+        setSlide(i)
+        await new Promise(r => setTimeout(r, 300))
+        const canvas = await html2canvas(el, { scale: 2, useCORS: true, logging: false, backgroundColor: (i === 0 || i === 10) ? '#22190C' : '#ffffff' })
+        if (i > 0) pdf.addPage([w, h], 'landscape')
+        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, w, h)
+      }
+      pdf.save(`QSHF-pitch-deck-${new Date().toISOString().slice(0, 10)}.pdf`)
+    } catch (err) {
+      console.error('PDF export failed:', err)
+    } finally {
+      setSlide(originalSlide)
+      isExportingRef.current = false
+      setIsExporting(false)
+    }
+  }, [])
+
+  useImperativeHandle(ref, () => ({ exportPDF }), [exportPDF])
+
   const SlideContent = SLIDES[slide]
 
   return (
@@ -1170,8 +1206,10 @@ export default function QSHFPitchDeck() {
         .sil { animation: slideInL 0.32s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
       `}</style>
 
-      <div key={animKey} className={animDir === 'right' ? 'sir' : 'sil'} style={{ flex: 1, overflow: 'hidden' }}>
-        <SlideContent calc={calc} setCalc={setCalc} />
+      <div ref={captureRef} style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+        <div key={isExporting ? 'export' : animKey} className={isExporting ? '' : (animDir === 'right' ? 'sir' : 'sil')} style={{ width: '100%', height: '100%' }}>
+          <SlideContent calc={calc} setCalc={setCalc} />
+        </div>
       </div>
 
       {/* Nav bar */}
@@ -1200,4 +1238,6 @@ export default function QSHFPitchDeck() {
       </div>
     </div>
   )
-}
+})
+
+export default QSHFPitchDeck

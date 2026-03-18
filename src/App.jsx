@@ -32,7 +32,7 @@ export default function App() {
           QSHF - Drafting Copy Agent
         </div>
         <div style={{ color: '#F4F0ED', fontSize: '14px', letterSpacing: '0.02em' }}>
-          Clear<em>AI</em> Webslides
+          ClearAI Webslides
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <button
