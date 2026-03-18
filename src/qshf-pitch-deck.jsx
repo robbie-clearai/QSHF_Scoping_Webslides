@@ -79,10 +79,13 @@ function Rule({ color = C.clay, op = 0.3, my = 28 }) {
   return <div style={{ height: '1px', background: color, opacity: op, margin: `${my}px 0` }} />
 }
 
-function Wrap({ children, justify = 'center' }) {
+function Wrap({ children, justify = 'flex-start', section = '' }) {
   return (
-    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: justify, padding: '56px 80px', boxSizing: 'border-box' }}>
-      {children}
+    <div style={{ width: '100%', height: '100%', background: C.white, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: justify, padding: '44px 56px', boxSizing: 'border-box' }}>
+        {children}
+      </div>
+      <SlideFooter section={section} />
     </div>
   )
 }
@@ -596,7 +599,7 @@ function S06({ calc, setCalc }) {
   const maxSaving = Math.max(...d.scenarios.map(s => s.annualSaving))
 
   return (
-    <Wrap justify="flex-start">
+    <Wrap justify="flex-start" section="The Solution">
       <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>The Solution</div>
       <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
       <div style={{ fontFamily: F.main, fontSize: '22px', color: C.obsidian, marginBottom: '20px' }}>Calculator — Base Assumptions</div>
@@ -702,7 +705,7 @@ function S06({ calc, setCalc }) {
 function S07({ calc }) {
   const d = derive(calc)
   return (
-    <Wrap justify="flex-start">
+    <Wrap justify="flex-start" section="The Solution">
       <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>The Solution</div>
       <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
       <div style={{ fontFamily: F.main, fontSize: '24px', color: C.obsidian, marginBottom: '28px' }}>
@@ -807,7 +810,7 @@ function S08({ calc }) {
   ]
 
   return (
-    <Wrap justify="flex-start">
+    <Wrap justify="flex-start" section="The Solution">
       <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>The Solution</div>
       <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
       <div style={{ fontFamily: F.main, fontSize: '22px', color: C.obsidian, marginBottom: '18px' }}>Investment Required</div>
@@ -918,7 +921,7 @@ function S09() {
     },
   ]
   return (
-    <Wrap justify="flex-start">
+    <Wrap justify="flex-start" section="The Solution">
       <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>The Solution</div>
       <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
       <div style={{ fontFamily: F.main, fontSize: '26px', color: C.obsidian, marginBottom: '28px' }}>Timeline &amp; Next Steps</div>
@@ -1002,7 +1005,7 @@ function S11() {
     { num: '05', title: 'Deliver', desc: 'Top 3 results and their required changes are presented to the user on the front end.' },
   ]
   return (
-    <Wrap justify="flex-start">
+    <Wrap justify="flex-start" section="Appendix">
       <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>Appendix</div>
       <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
       <div style={{ fontFamily: F.main, fontSize: '24px', color: C.obsidian, marginBottom: '36px' }}>Workflow of the Solution</div>
@@ -1066,7 +1069,7 @@ function S12() {
     </table>
   )
   return (
-    <Wrap justify="flex-start">
+    <Wrap justify="flex-start" section="Appendix">
       <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>Appendix</div>
       <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
       <div style={{ fontFamily: F.main, fontSize: '24px', color: C.obsidian, marginBottom: '18px' }}>Weighting of Building Categories</div>
@@ -1081,7 +1084,7 @@ function S12() {
 /* ── SLIDE 13: AI COSTS ── */
 function S13() {
   return (
-    <Wrap justify="flex-start">
+    <Wrap justify="flex-start" section="Appendix">
       <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>Appendix</div>
       <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
       <div style={{ fontFamily: F.main, fontSize: '24px', color: C.obsidian, marginBottom: '24px' }}>Further Assumptions — AI Search Costs</div>
@@ -1157,11 +1160,9 @@ export default function QSHFPitchDeck() {
   }
 
   const SlideContent = SLIDES[slide]
-  // White-background slides (1–4) don't use the parchment bg
-  const isWhiteSlide = slide >= 1 && slide <= 4
 
   return (
-    <div style={{ width: '100%', height: 'calc(100vh - 68px)', background: isWhiteSlide ? C.white : C.parchment, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div style={{ width: '100%', height: 'calc(100vh - 68px)', background: C.white, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <style>{`
         @keyframes slideInR { from { opacity: 0; transform: translateX(36px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes slideInL { from { opacity: 0; transform: translateX(-36px); } to { opacity: 1; transform: translateX(0); } }

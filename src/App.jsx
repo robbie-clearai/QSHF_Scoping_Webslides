@@ -67,9 +67,7 @@ export default function App() {
     // Add font definitions so text renders correctly
     const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs')
     const styleEl = document.createElementNS('http://www.w3.org/2000/svg', 'style')
-    styleEl.textContent = `
-      @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
-    `
+    styleEl.textContent = ``
     defs.appendChild(styleEl)
     clone.insertBefore(defs, clone.firstChild)
 
@@ -92,7 +90,7 @@ export default function App() {
   }, [active])
 
   return (
-    <div style={{ fontFamily: "'Thorndale AMT Regular', 'Thorndale AMT', 'Times New Roman', serif", background: '#F4F0ED', minHeight: '100vh' }}>
+    <div style={{ fontFamily: "'Thorndale AMT Regular', 'Thorndale AMT', 'Times New Roman', serif", background: '#FFFFFF', minHeight: '100vh' }}>
       <div style={{
         display: 'flex',
         gap: '2px',
