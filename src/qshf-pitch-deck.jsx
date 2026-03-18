@@ -1198,7 +1198,7 @@ const QSHFPitchDeck = forwardRef(function QSHFPitchDeck(_props, ref) {
   const SlideContent = SLIDES[slide]
 
   return (
-    <div style={{ width: '100%', height: 'calc(100vh - 68px)', background: C.white, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div style={{ width: '100%', height: 'calc(100vh - 52px)', background: C.white, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <style>{`
         @keyframes slideInR { from { opacity: 0; transform: translateX(36px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes slideInL { from { opacity: 0; transform: translateX(-36px); } to { opacity: 1; transform: translateX(0); } }
@@ -1207,7 +1207,7 @@ const QSHFPitchDeck = forwardRef(function QSHFPitchDeck(_props, ref) {
       `}</style>
 
       <div ref={captureRef} style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
-        <div key={isExporting ? 'export' : animKey} className={isExporting ? '' : (animDir === 'right' ? 'sir' : 'sil')} style={{ width: '100%', height: '100%' }}>
+        <div key={isExporting ? 'export' : animKey} className={isExporting ? '' : (animDir === 'right' ? 'sir' : 'sil')} style={{ width: '100%', minHeight: '100%' }}>
           <SlideContent calc={calc} setCalc={setCalc} />
         </div>
       </div>
