@@ -106,22 +106,6 @@ export default function App() {
         <div style={{ color: '#F4F0ED', fontWeight: 700, fontSize: '14px', marginRight: '24px', display: 'flex', alignItems: 'center' }}>
           QSHF - Drafting Copy Agent
         </div>
-        <button
-          style={{
-            background: '#FF4832',
-            color: '#F4F0ED',
-            border: '1px solid #FF4832',
-            padding: '8px 16px',
-            borderRadius: '4px',
-            cursor: 'default',
-            fontFamily: "'Thorndale AMT Regular', 'Thorndale AMT', 'Times New Roman', serif",
-            fontSize: '12px',
-            fontWeight: 700,
-            transition: 'all 0.2s',
-          }}
-        >
-          QSHF Pitch Deck
-        </button>
       </div>
       {isPitch ? (
         <QSHFPitchDeck />
