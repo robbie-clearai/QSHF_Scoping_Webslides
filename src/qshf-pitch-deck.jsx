@@ -758,18 +758,17 @@ function S08({ calc }) {
   const proposals = [
     {
       num: 'Proposal 1',
-      name: 'Essential',
+      name: 'Basic',
       tag: 'Core functionality',
       devCost: 38000,
-      apiCost: 450,
-      maintCost: 1500,
+      apiCost: 1339,
+      maintCost: 3000,
       features: [
         'MS Access database integration',
-        'Copy check across 8 key dimensions',
+        'Full 15-factor weighted AI scoring',
         'Top 1 match result with change summary',
         'Basic PDF upload web interface',
         'Weekly scheduled database sync',
-        'Email delivery of match results',
       ],
     },
     {
@@ -785,16 +784,17 @@ function S08({ calc }) {
         'Top 3 match results with full change lists',
         'Real-time database sync',
         'Clean web dashboard with PDF upload',
+        'Email delivery of match results',
         'Drafter training & onboarding',
       ],
     },
     {
       num: 'Proposal 3',
-      name: 'Enterprise',
+      name: 'Super System',
       tag: 'Full feature set',
       devCost: 95000,
-      apiCost: 1800,
-      maintCost: 5000,
+      apiCost: 1339,
+      maintCost: 3000,
       features: [
         'Everything in Proposal 2',
         'Automated new-job notifications',
