@@ -1,0 +1,7 @@
+[build]
+builder = "NIXPACKS"
+buildCommand = "npm ci && vite build --base /"
+
+[deploy]
+startCommand = "npx serve dist -l $PORT"
+healthcheckPath = "/"
