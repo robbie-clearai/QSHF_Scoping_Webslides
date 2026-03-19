@@ -161,7 +161,7 @@ function S00() {
         <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.7)', textTransform: 'uppercase' }}>
           Queensland Steel House Frames
         </div>
-        <img src="/clearai-logo.png" alt="ClearAI" style={{ height: '22px', filter: 'invert(1)', mixBlendMode: 'screen', opacity: 0.85 }} />
+        <img src="/clearai-logo.png" alt="ClearAI" style={{ height: '22px' }} />
       </div>
 
       {/* Main title — vertically centered in remaining space */}
@@ -965,7 +965,7 @@ function S10() {
         <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.7)', textTransform: 'uppercase' }}>
           Queensland Steel House Frames
         </div>
-        <img src="/clearai-logo.png" alt="ClearAI" style={{ height: '22px', filter: 'invert(1)', mixBlendMode: 'screen', opacity: 0.85 }} />
+        <img src="/clearai-logo.png" alt="ClearAI" style={{ height: '22px' }} />
       </div>
 
       {/* Middle: Thank You */}
