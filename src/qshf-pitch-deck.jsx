@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react'
 import html2canvas from 'html2canvas'
 import calendarImg from './assets/calendar.png'
-import solutionDemoImg from './assets/solution-demo.png'
 
 const C = {
   parchment: '#F4F0ED',
@@ -16,10 +15,7 @@ const F = { main: "'Thorndale AMT Regular', 'Thorndale AMT', 'Times New Roman', 
 const TOTAL = 14
 
 const DEFAULT_CALC = {
-  annualSalary: 80000,
-  hoursPerWeek: 37.5,
-  superRate: 12,
-  payrollTaxRate: 4.75,
+  hourlyWage: 41.03,
   overheadRate: 30,
   drawingsPerWeek: 50,
   checkingHoursPerWeek: 37.5,
@@ -27,10 +23,7 @@ const DEFAULT_CALC = {
   draftingTimeCopy: 5,
   currentMatchRate: 20,
   sources: {
-    annualSalary: 'ClearAI Internal Research',
-    hoursPerWeek: 'Process observation workshop at QSHF',
-    superRate: 'ClearAI Internal Research',
-    payrollTaxRate: 'ClearAI Internal Research',
+    hourlyWage: 'ClearAI Internal Research',
     overheadRate: 'ClearAI Internal Research',
     drawingsPerWeek: 'Process observation workshop at QSHF',
     checkingHoursPerWeek: 'Process observation workshop at QSHF',
@@ -41,11 +34,10 @@ const DEFAULT_CALC = {
 }
 
 function derive(c) {
-  const baseHourlyRate = c.annualSalary / 52 / c.hoursPerWeek
-  const loadedRate = baseHourlyRate * (1 + c.superRate / 100) * (1 + c.payrollTaxRate / 100) * (1 + c.overheadRate / 100)
+  const loadedRate = c.hourlyWage * (1 + c.overheadRate / 100)
   const annualCheckingCost = c.checkingHoursPerWeek * 52 * loadedRate
-  const devCost = 93750
-  const apiCost = 1339.17
+  const devCost = 62000
+  const apiCost = 1339
   const maintenanceCost = 3000
   const totalYear1 = devCost + apiCost + maintenanceCost
   const totalYear2Plus = apiCost + maintenanceCost
@@ -72,7 +64,7 @@ function derive(c) {
       isBase,
     }
   })
-  return { baseHourlyRate, loadedRate, annualCheckingCost, devCost, apiCost, maintenanceCost, totalYear1, totalYear2Plus, scenarios }
+  return { loadedRate, annualCheckingCost, devCost, apiCost, maintenanceCost, totalYear1, totalYear2Plus, scenarios }
 }
 
 /* ── Shared components ── */
@@ -82,8 +74,8 @@ function Rule({ color = C.clay, op = 0.3, my = 28 }) {
 
 function Wrap({ children, justify = 'flex-start', section = '' }) {
   return (
-    <div style={{ width: '100%', minHeight: '100%', background: C.white, display: 'flex', flexDirection: 'column' }}>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: justify, padding: '44px 56px', boxSizing: 'border-box', minHeight: '560px' }}>
+    <div style={{ width: '100%', height: '100%', background: C.white, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: justify, padding: '32px 48px', boxSizing: 'border-box', overflow: 'hidden' }}>
         {children}
       </div>
       <SlideFooter section={section} />
@@ -114,21 +106,19 @@ function DotIcon({ size = 13, gap = 5, color = C.red }) {
 
 /* Footer used on white slides (2–5) */
 function SlideFooter({ section }) {
+  const footerTextStyle = { fontSize: '9px', letterSpacing: '2.5px', textTransform: 'uppercase', color: 'rgba(0,0,0,0.45)' }
   return (
-    <div style={{
+    <div className="space-mono" style={{
       height: '40px', borderTop: '1px solid rgba(0,0,0,0.1)',
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       padding: '0 56px', flexShrink: 0, background: C.white,
     }}>
-      <div style={{ fontFamily: F.main, fontSize: '13px', color: '#000', display: 'flex', alignItems: 'baseline', gap: '1px' }}>
-        Clear<span style={{ fontStyle: 'italic' }}>AI</span>
+      <img src={`${import.meta.env.BASE_URL}clearai-logo-dark.png`} alt="ClearAI" style={{ height: '16px' }} />
+      <div style={{ display: 'flex', gap: '40px', alignItems: 'center' }}>
+        <span style={footerTextStyle}>Queensland Steel House Frames</span>
+        <span style={footerTextStyle}>Proposal 25-03-2026</span>
       </div>
-      <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '2.5px', textTransform: 'uppercase', color: 'rgba(0,0,0,0.4)' }}>
-        Queensland Steel House Frames &nbsp;&nbsp;&nbsp; Proposal 18-03-2026
-      </div>
-      <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '2.5px', textTransform: 'uppercase', color: 'rgba(0,0,0,0.4)' }}>
-        {section}
-      </div>
+      <div style={footerTextStyle}>{section}</div>
     </div>
   )
 }
@@ -136,8 +126,8 @@ function SlideFooter({ section }) {
 /* White slide wrapper */
 function WhiteSlide({ children, section }) {
   return (
-    <div style={{ width: '100%', minHeight: '100%', background: C.white, display: 'flex', flexDirection: 'column' }}>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: '560px' }}>
+    <div style={{ width: '100%', height: '100%', background: C.white, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         {children}
       </div>
       <SlideFooter section={section} />
@@ -149,7 +139,7 @@ function WhiteSlide({ children, section }) {
 function S00() {
   return (
     <div style={{
-      width: '100%', minHeight: 'calc(100vh - 104px)',
+      width: '100%', height: '100%',
       background: C.obsidian,
       display: 'flex', flexDirection: 'column',
       padding: '40px 56px',
@@ -158,10 +148,10 @@ function S00() {
     }}>
       {/* Top bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.7)', textTransform: 'uppercase' }}>
+        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.7)' }}>
           Queensland Steel House Frames
         </div>
-        <img src="/clearai-logo.png" alt="ClearAI" style={{ height: '22px' }} />
+        <img src={`${import.meta.env.BASE_URL}clearai-logo.png`} alt="ClearAI" style={{ height: '22px' }} />
       </div>
 
       {/* Main title — vertically centered in remaining space */}
@@ -180,10 +170,10 @@ function S00() {
 
       {/* Bottom bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.55)', textTransform: 'uppercase' }}>
-          Proposal 18-03-2026
+        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.55)' }}>
+          Proposal 25-03-2026
         </div>
-        <DotIcon size={13} gap={5} color={C.red} />
+        <DotIcon size={13} gap={0} color={C.red} />
       </div>
     </div>
   )
@@ -191,58 +181,62 @@ function S00() {
 
 /* ── PROCESS FLOW DIAGRAM ── */
 function ProcessDiagram() {
+  const BOX_W = 240
+  const BOX_H = 58
   const nodeStyle = (bg, color = '#fff', border = 'none') => ({
     background: bg, color, border,
-    padding: '10px 16px', borderRadius: '4px',
-    fontFamily: F.main, fontSize: '13px', lineHeight: 1.4,
-    textAlign: 'center', boxSizing: 'border-box',
+    width: `${BOX_W}px`, height: `${BOX_H}px`,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    borderRadius: '4px',
+    fontFamily: F.main, fontSize: '12px', lineHeight: 1.35,
+    textAlign: 'center', boxSizing: 'border-box', padding: '8px 12px',
   })
   const Arrow = () => (
-    <div style={{ textAlign: 'center', color: '#888', fontSize: '18px', lineHeight: 1, padding: '1px 0' }}>↓</div>
+    <div style={{ textAlign: 'center', color: '#888', fontSize: '16px', lineHeight: 1, padding: '1px 0' }}>↓</div>
   )
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', width: '100%', maxWidth: '660px' }}>
-      <div style={{ ...nodeStyle('#111'), width: '260px' }}>A new job comes in</div>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', width: '100%' }}>
+      <div style={nodeStyle('#111')}>A new job comes in</div>
       <Arrow />
-      <div style={{ ...nodeStyle(C.clay), width: '420px' }}>
+      <div style={nodeStyle(C.clay)}>
         Drafter prints the job and searches the MS Access Database for potential copies
       </div>
       <Arrow />
       {/* Loop */}
       <div style={{
         border: '1.5px dashed rgba(131,74,51,0.5)', borderRadius: '6px',
-        padding: '12px 16px', width: '620px', boxSizing: 'border-box',
+        padding: '10px 16px',
         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px',
       }}>
-        <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '2px', color: C.clay, textTransform: 'uppercase', marginBottom: '6px' }}>
+        <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '2px', color: C.clay, marginBottom: '4px' }}>
           For each potential copy in MS Access
         </div>
-        <div style={{ ...nodeStyle('#5a3525'), width: '360px' }}>
+        <div style={nodeStyle('#5a3525')}>
           Manually evaluate drawing against many different factors
         </div>
         <Arrow />
-        <div style={{ display: 'flex', gap: '12px', width: '100%', justifyContent: 'center' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', maxWidth: '220px' }}>
+        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
             <div style={{ fontFamily: F.main, fontSize: '10px', color: C.red, letterSpacing: '1px', padding: '1px 0' }}>Bad copy</div>
-            <div style={{ ...nodeStyle('#f0e8e5', '#555'), border: '1px solid #ddd', width: '100%' }}>
+            <div style={{ ...nodeStyle('#f0e8e5', '#555'), border: '1px solid #ddd' }}>
               Skip — look for another candidate
             </div>
           </div>
           <div style={{ width: '1px', background: 'rgba(0,0,0,0.1)', margin: '8px 0' }} />
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', maxWidth: '220px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
             <div style={{ fontFamily: F.main, fontSize: '10px', color: C.clay, letterSpacing: '1px', padding: '1px 0' }}>Good copy</div>
-            <div style={{ ...nodeStyle('#a06045'), width: '100%' }}>
+            <div style={nodeStyle('#a06045')}>
               Write down differences and email details to another drafter
             </div>
           </div>
         </div>
-        <div style={{ marginTop: '8px', fontFamily: F.main, fontSize: '10px', color: C.clay, letterSpacing: '1px', textTransform: 'uppercase' }}>
+        <div style={{ marginTop: '4px', fontFamily: F.main, fontSize: '10px', color: C.clay, letterSpacing: '1px' }}>
           ↻ Continue to next candidate
         </div>
       </div>
       <Arrow />
-      <div style={{ ...nodeStyle('#111'), width: '380px' }}>
+      <div style={nodeStyle('#111')}>
         Repeat until a few decent candidates are found
       </div>
     </div>
@@ -253,15 +247,18 @@ function ProcessDiagram() {
 function S01() {
   return (
     <WhiteSlide section="The Problem">
-      <div style={{ padding: '44px 56px 20px', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
-        <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>
-          The Problem
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+        {/* Left: heading + text, centred vertically */}
+        <div style={{ flex: '0 0 40%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '36px 40px 36px 56px' }}>
+          <div style={{ fontFamily: F.main, fontSize: '46px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>
+            The Problem
+          </div>
+          <div style={{ fontFamily: F.main, fontSize: '17px', color: '#444', lineHeight: 1.7 }}>
+            The drafting copy check process is very time consuming, repetitive, and takes up a lot of employee time.
+          </div>
         </div>
-        <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
-        <div style={{ fontFamily: F.main, fontSize: '16px', color: '#555', lineHeight: 1.6, marginBottom: '20px', maxWidth: '600px' }}>
-          The drafting copy check process is very time consuming, repetitive, and takes up a lot of employee time.
-        </div>
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {/* Right: workflow diagram, centred */}
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px 40px' }}>
           <ProcessDiagram />
         </div>
       </div>
@@ -334,32 +331,19 @@ function WeekCalendar() {
 function S02() {
   return (
     <WhiteSlide section="The Problem">
-      <div style={{ flex: 1, display: 'flex', gap: '0', padding: '0 0 0 56px', overflow: 'hidden' }}>
-        {/* Left: text */}
-        <div style={{ flex: '0 0 42%', display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingRight: '48px', gap: '0' }}>
-          <div style={{ marginBottom: '32px' }}>
-            <div style={{ fontFamily: F.main, fontSize: '22px', lineHeight: 1.45, color: '#000' }}>
-              Your drafters spend{' '}
-              <span style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}>37.5 hours</span>
-              {' '}every week on manual copy checking.
-            </div>
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+        {/* Left: two equal paragraphs, centred vertically */}
+        <div style={{ flex: '0 0 44%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '36px 48px 36px 56px' }}>
+          <div style={{ fontFamily: F.main, fontSize: '20px', lineHeight: 1.6, color: '#000', marginBottom: '44px' }}>
+            Your drafters spend{' '}
+            <span style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}>37.5 hours</span>
+            {' '}every week on manual copy checking. That is equivalent to{' '}
+            <span style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}>one full time role!</span>
           </div>
-          <div style={{ marginBottom: '32px' }}>
-            <div style={{ fontFamily: F.main, fontSize: '16px', lineHeight: 1.55, color: '#000' }}>
-              That is equivalent to{' '}
-              <span style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}>one full time role!</span>
-            </div>
-          </div>
-          <div style={{ marginBottom: '32px' }}>
-            <div style={{ fontFamily: F.main, fontSize: '22px', lineHeight: 1.45, color: '#000' }}>
-              The current process only finds a usable match{' '}
-              <span style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}>20% of the time.</span>
-            </div>
-          </div>
-          <div>
-            <div style={{ fontFamily: F.main, fontSize: '16px', lineHeight: 1.55, color: '#000' }}>
-              So 80% of the copy check time is often wasted!
-            </div>
+          <div style={{ fontFamily: F.main, fontSize: '20px', lineHeight: 1.6, color: '#000' }}>
+            The current process only finds a usable match{' '}
+            <span style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}>20% of the time.</span>
+            {' '}So 80% of the copy check time is often wasted!
           </div>
         </div>
         {/* Right: calendar image */}
@@ -375,52 +359,45 @@ function S02() {
   )
 }
 
-/* ── SCALING LINE CHART ── */
-function ScalingChart() {
+/* ── COST CHART (single Y axis, cost only, x 0-200) ── */
+// loadedRate derived from DEFAULT_CALC: $80k/52wks/37.5hrs * 1.12 * 1.0475 * 1.30 ≈ $62.59/hr
+const LOADED_RATE = 62.59
+const BASE_WEEKLY_COST = 37.5 * LOADED_RATE // ≈ $2347 — cost of 37.5 hrs at x=0
+
+function CostChart() {
   const W = 480, H = 290
-  const padL = 48, padR = 52, padT = 48, padB = 44
+  const padL = 62, padR = 20, padT = 44, padB = 44
   const iW = W - padL - padR
   const iH = H - padT - padB
-
-  const maxX = 500, maxY = 375, maxCost = 21000
+  const maxX = 200, maxCost = 12000
 
   const tx = x => padL + (x / maxX) * iW
-  const ty = y => padT + iH - (y / maxY) * iH
+  const ty = y => padT + iH - (y / maxCost) * iH
 
-  // y = 0.66 * x (total FTE hours)
-  const fteData = [[0, 0], [50, 33], [100, 66], [200, 132], [300, 198], [400, 264], [500, 330]]
-  // y = 0.52 * x (wasted hours, 80% friction)
-  const wasteData = [[0, 0], [50, 26], [100, 52], [200, 104], [300, 156], [400, 208], [500, 260]]
-
-  const pts = (data) => data.map(([x, y]) => `${tx(x)},${ty(y)}`).join(' ')
-  const shadePts = [
-    ...fteData.map(([x, y]) => `${tx(x)},${ty(y)}`),
-    ...[...wasteData].reverse().map(([x, y]) => `${tx(x)},${ty(y)}`),
-  ].join(' ')
-
-  const yTicks = [0, 50, 100, 150, 200, 250, 300, 350]
-  const xTicks = [0, 100, 200, 300, 400, 500]
-  const costTicks = [0, 5000, 10000, 15000, 20000]
+  // cost(x) = BASE_WEEKLY_COST + 0.66 * x * LOADED_RATE
+  const costData = [0, 50, 100, 150, 200].map(x => [x, BASE_WEEKLY_COST + 0.66 * x * LOADED_RATE])
+  const pts = data => data.map(([x, y]) => `${tx(x)},${ty(y)}`).join(' ')
+  const yTicks = [0, 2000, 4000, 6000, 8000, 10000, 12000]
+  const xTicks = [0, 50, 100, 150, 200]
 
   return (
     <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ overflow: 'visible' }}>
-      {/* Title */}
-      <text x={padL + iW / 2} y={18} textAnchor="middle" fontFamily={F.main} fontSize={10.5} fill="#222" fontWeight="bold">
-        Scaling Inefficiency: Operational Cost vs. Output
+      <text x={padL + iW / 2} y={16} textAnchor="middle" fontFamily={F.main} fontSize={10.5} fill="#222" fontWeight="bold">
+        Scaling Inefficiency: Weekly Cost vs. Output
       </text>
 
-      {/* Grid lines + Y labels left */}
       {yTicks.map(v => {
         const y = ty(v)
         return (
           <g key={v}>
             <line x1={padL} y1={y} x2={padL + iW} y2={y} stroke="#e8e8e8" strokeWidth={0.8} />
-            <text x={padL - 4} y={y + 3.5} textAnchor="end" fontFamily={F.main} fontSize={8} fill="#888">{v}</text>
+            <text x={padL - 6} y={y + 3.5} textAnchor="end" fontFamily={F.main} fontSize={8} fill="#888">
+              {v === 0 ? '$0' : `$${v / 1000}k`}
+            </text>
           </g>
         )
       })}
 
-      {/* X axis ticks + labels */}
       {xTicks.map(v => (
         <g key={v}>
           <line x1={tx(v)} y1={padT + iH} x2={tx(v)} y2={padT + iH + 4} stroke="#aaa" strokeWidth={0.8} />
@@ -428,53 +405,116 @@ function ScalingChart() {
         </g>
       ))}
 
-      {/* Y axis right labels (cost) */}
-      {costTicks.map(v => {
-        const y = ty((v / maxCost) * maxY)
-        return (
-          <text key={v} x={padL + iW + 4} y={y + 3.5} textAnchor="start" fontFamily={F.main} fontSize={8} fill="#888">
-            {v === 0 ? '0' : `${v / 1000}k`}
-          </text>
-        )
-      })}
-
-      {/* Axis borders */}
       <line x1={padL} y1={padT} x2={padL} y2={padT + iH} stroke="#aaa" strokeWidth={0.8} />
       <line x1={padL} y1={padT + iH} x2={padL + iW} y2={padT + iH} stroke="#aaa" strokeWidth={0.8} />
-      <line x1={padL + iW} y1={padT} x2={padL + iW} y2={padT + iH} stroke="#aaa" strokeWidth={0.8} />
 
       {/* Shaded area */}
-      <polygon points={shadePts} fill="#FF4832" opacity={0.1} />
+      <polygon
+        points={[`${tx(0)},${ty(0)}`, ...costData.map(([x, y]) => `${tx(x)},${ty(y)}`), `${tx(200)},${ty(0)}`].join(' ')}
+        fill="#FF4832" opacity={0.08}
+      />
 
-      {/* FTE line (orange/red) */}
-      <polyline points={pts(fteData)} fill="none" stroke="#FF4832" strokeWidth={2} />
-      {fteData.map(([x, y], i) => i % 2 === 0 && i > 0 && (
+      {/* Cost line */}
+      <polyline points={pts(costData)} fill="none" stroke="#FF4832" strokeWidth={2} />
+      {costData.map(([x, y], i) => (
         <circle key={i} cx={tx(x)} cy={ty(y)} r={3} fill="#FF4832" />
       ))}
 
-      {/* Waste line (black dashed) */}
-      <polyline points={pts(wasteData)} fill="none" stroke="#333" strokeWidth={1.5} strokeDasharray="5 4" />
-      {wasteData.map(([x, y], i) => i % 2 === 0 && i > 0 && (
-        <circle key={i} cx={tx(x)} cy={ty(y)} r={2.5} fill="#333" />
-      ))}
-
-      {/* Axis titles */}
-      <text x={14} y={padT + iH / 2} textAnchor="middle" fontFamily={F.main} fontSize={9} fill="#555"
-        transform={`rotate(-90 14 ${padT + iH / 2})`}>Weekly Hours</text>
+      <text x={16} y={padT + iH / 2} textAnchor="middle" fontFamily={F.main} fontSize={9} fill="#555"
+        transform={`rotate(-90 16 ${padT + iH / 2})`}>Total Weekly Cost ($)</text>
       <text x={padL + iW / 2} y={H - 4} textAnchor="middle" fontFamily={F.main} fontSize={9} fill="#555">
         Drafting Jobs Per Week
       </text>
-      <text x={W - 6} y={padT + iH / 2} textAnchor="middle" fontFamily={F.main} fontSize={9} fill="#555"
-        transform={`rotate(90 ${W - 6} ${padT + iH / 2})`}>Total Weekly Cost ($)</text>
 
-      {/* Legend */}
       <g transform={`translate(${padL + 8}, ${padT + 8})`}>
         <line x1={0} y1={5} x2={18} y2={5} stroke="#FF4832" strokeWidth={2} />
         <circle cx={9} cy={5} r={2.5} fill="#FF4832" />
-        <text x={22} y={8.5} fontFamily={F.main} fontSize={8} fill="#333">Total FTE Hours Required</text>
-        <line x1={0} y1={18} x2={18} y2={18} stroke="#333" strokeWidth={1.5} strokeDasharray="4 3" />
-        <circle cx={9} cy={18} r={2} fill="#333" />
-        <text x={22} y={21.5} fontFamily={F.main} fontSize={8} fill="#333">Hours Wasted (80% friction)</text>
+        <text x={22} y={8.5} fontFamily={F.main} fontSize={8} fill="#333">Current Process Cost ($/week)</text>
+      </g>
+    </svg>
+  )
+}
+
+/* ── COMPARISON CHART (for Slide 6) ── */
+function ComparisonChart() {
+  const W = 540, H = 300
+  const padL = 62, padR = 20, padT = 48, padB = 44
+  const iW = W - padL - padR
+  const iH = H - padT - padB
+  const maxX = 200, maxCost = 12000
+
+  const tx = x => padL + (x / maxX) * iW
+  const ty = y => padT + iH - (y / maxCost) * iH
+
+  const currentData = [0, 50, 100, 150, 200].map(x => [x, BASE_WEEKLY_COST + 0.66 * x * LOADED_RATE])
+  // AI solution: flat — API ($1,339/yr) + maintenance ($3,000/yr) = $4,339/yr ÷ 52 ≈ $83/week
+  const AI_WEEKLY = Math.round((1339 + 3000) / 52)
+  const aiData = [[0, AI_WEEKLY], [200, AI_WEEKLY]]
+  const pts = data => data.map(([x, y]) => `${tx(x)},${ty(y)}`).join(' ')
+  const yTicks = [0, 2000, 4000, 6000, 8000, 10000, 12000]
+  const xTicks = [0, 50, 100, 150, 200]
+
+  return (
+    <svg width="100%" height="100%" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" style={{ overflow: 'hidden' }}>
+      <text x={padL + iW / 2} y={18} textAnchor="middle" fontFamily={F.main} fontSize={10.5} fill="#222" fontWeight="bold">
+        Weekly Cost vs. Output: Current Process vs. AI Solution
+      </text>
+
+      {yTicks.map(v => {
+        const y = ty(v)
+        return (
+          <g key={v}>
+            <line x1={padL} y1={y} x2={padL + iW} y2={y} stroke="#e8e8e8" strokeWidth={0.8} />
+            <text x={padL - 6} y={y + 3.5} textAnchor="end" fontFamily={F.main} fontSize={8} fill="#888">
+              {v === 0 ? '$0' : `$${v / 1000}k`}
+            </text>
+          </g>
+        )
+      })}
+
+      {xTicks.map(v => (
+        <g key={v}>
+          <line x1={tx(v)} y1={padT + iH} x2={tx(v)} y2={padT + iH + 4} stroke="#aaa" strokeWidth={0.8} />
+          <text x={tx(v)} y={padT + iH + 14} textAnchor="middle" fontFamily={F.main} fontSize={8} fill="#888">{v}</text>
+        </g>
+      ))}
+
+      <line x1={padL} y1={padT} x2={padL} y2={padT + iH} stroke="#aaa" strokeWidth={0.8} />
+      <line x1={padL} y1={padT + iH} x2={padL + iW} y2={padT + iH} stroke="#aaa" strokeWidth={0.8} />
+
+      {/* Shaded gap between lines */}
+      <polygon
+        points={[...currentData.map(([x, y]) => `${tx(x)},${ty(y)}`), `${tx(200)},${ty(AI_WEEKLY)}`, `${tx(0)},${ty(AI_WEEKLY)}`].join(' ')}
+        fill="#FF4832" opacity={0.07}
+      />
+
+      {/* Current process line */}
+      <polyline points={pts(currentData)} fill="none" stroke="#FF4832" strokeWidth={2} />
+      {currentData.map(([x, y], i) => (
+        <circle key={i} cx={tx(x)} cy={ty(y)} r={3} fill="#FF4832" />
+      ))}
+
+      {/* AI solution flat line */}
+      <polyline points={pts(aiData)} fill="none" stroke="#27ae60" strokeWidth={2.5} strokeDasharray="7 3" />
+      <circle cx={tx(0)} cy={ty(AI_WEEKLY)} r={3} fill="#27ae60" />
+      <circle cx={tx(200)} cy={ty(AI_WEEKLY)} r={3} fill="#27ae60" />
+      <text x={tx(200) - 4} y={ty(AI_WEEKLY) - 6} textAnchor="end" fontFamily={F.main} fontSize={8} fill="#27ae60">
+        ~${AI_WEEKLY}/wk (API + support)
+      </text>
+
+      <text x={16} y={padT + iH / 2} textAnchor="middle" fontFamily={F.main} fontSize={9} fill="#555"
+        transform={`rotate(-90 16 ${padT + iH / 2})`}>Total Weekly Cost ($)</text>
+      <text x={padL + iW / 2} y={H - 4} textAnchor="middle" fontFamily={F.main} fontSize={9} fill="#555">
+        Drafting Jobs Per Week
+      </text>
+
+      <g transform={`translate(${padL + 8}, ${padT + 8})`}>
+        <line x1={0} y1={5} x2={18} y2={5} stroke="#FF4832" strokeWidth={2} />
+        <circle cx={9} cy={5} r={2.5} fill="#FF4832" />
+        <text x={22} y={8.5} fontFamily={F.main} fontSize={8} fill="#333">Current Process</text>
+        <line x1={0} y1={18} x2={18} y2={18} stroke="#27ae60" strokeWidth={2.5} strokeDasharray="6 2.5" />
+        <circle cx={9} cy={18} r={2.5} fill="#27ae60" />
+        <text x={22} y={21.5} fontFamily={F.main} fontSize={8} fill="#333">With AI Solution (flat)</text>
       </g>
     </svg>
   )
@@ -484,28 +524,25 @@ function ScalingChart() {
 function S03() {
   return (
     <WhiteSlide section="The Problem">
-      <div style={{ flex: 1, display: 'flex', gap: '0', padding: '0 0 0 56px', overflow: 'hidden' }}>
-        {/* Left: text */}
-        <div style={{ flex: '0 0 38%', display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingRight: '44px', gap: '0' }}>
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+        {/* Left: two problem paragraphs, centred vertically */}
+        <div style={{ flex: '0 0 38%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '36px 44px 36px 56px' }}>
           <div style={{ marginBottom: '36px' }}>
-            <div style={{ fontFamily: F.main, fontSize: '20px', lineHeight: 1.5, color: '#000' }}>
-              Your database grows every week. Manual searching <span style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}>cannot keep up.</span>
-            </div>
-          </div>
-          <div style={{ marginBottom: '36px' }}>
-            <div style={{ fontFamily: F.main, fontSize: '20px', lineHeight: 1.5, color: '#000' }}>
-              More jobs means more searching. Copy check costs grow with every drawing added.
+            <div style={{ fontFamily: F.main, fontSize: '11px', letterSpacing: '1.5px', color: C.clay, marginBottom: '10px' }}>The Volume Problem</div>
+            <div style={{ fontFamily: F.main, fontSize: '17px', lineHeight: 1.6, color: '#000' }}>
+              Your database grows every week. Manual searching <span style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}>cannot keep up.</span> More jobs means more searching. Copy check costs grow with every drawing added.
             </div>
           </div>
           <div>
-            <div style={{ fontFamily: F.main, fontSize: '20px', lineHeight: 1.5, color: '#000' }}>
+            <div style={{ fontFamily: F.main, fontSize: '11px', letterSpacing: '1.5px', color: C.clay, marginBottom: '10px' }}>The Inconsistency Problem</div>
+            <div style={{ fontFamily: F.main, fontSize: '17px', lineHeight: 1.6, color: '#000' }}>
               Drafters search differently. Good copies get missed. Worse ones get used instead.
             </div>
           </div>
         </div>
-        {/* Right: chart */}
+        {/* Right: cost chart */}
         <div style={{ flex: 1, padding: '36px 40px 36px 0', display: 'flex', alignItems: 'center' }}>
-          <ScalingChart />
+          <CostChart />
         </div>
       </div>
     </WhiteSlide>
@@ -537,17 +574,16 @@ function S04() {
 function S05() {
   return (
     <WhiteSlide section="The Solution">
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '44px 56px', boxSizing: 'border-box' }}>
-        <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '36px 56px', boxSizing: 'border-box', overflow: 'hidden' }}>
+        <div style={{ fontFamily: F.main, fontSize: '46px', lineHeight: 1.05, color: '#000', marginBottom: '12px' }}>
           The Solution
         </div>
-        <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '0' }} />
-        <div style={{ flex: 1, minHeight: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 0' }}>
-          <img
-            src={solutionDemoImg}
-            alt="ClearAI copy check tool"
-            style={{ width: 'auto', height: 'auto', maxWidth: '84%', maxHeight: '52vh', borderRadius: '6px', boxShadow: '0 4px 24px rgba(0,0,0,0.10)' }}
-          />
+        <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '14px' }} />
+        <div style={{ fontFamily: F.main, fontSize: '18px', color: C.obsidian, marginBottom: '8px' }}>
+          Costs flatten as your database grows
+        </div>
+        <div style={{ flex: 1, overflow: 'hidden', display: 'flex', alignItems: 'stretch' }}>
+          <ComparisonChart />
         </div>
       </div>
     </WhiteSlide>
@@ -559,7 +595,6 @@ function S06({ calc, setCalc }) {
   const d = derive(calc)
 
   const inputStyle = {
-    fontFamily: F.main,
     fontSize: '13px',
     background: '#fff',
     border: '1.5px solid rgba(34,25,12,0.3)',
@@ -571,7 +606,6 @@ function S06({ calc, setCalc }) {
     color: C.obsidian,
   }
   const sourceInputStyle = {
-    fontFamily: F.main,
     fontSize: '11px',
     color: C.clay,
     background: 'transparent',
@@ -583,10 +617,7 @@ function S06({ calc, setCalc }) {
   }
 
   const rows = [
-    { label: 'Annual Salary', field: 'annualSalary', unit: '$/year' },
-    { label: 'Working Hours', field: 'hoursPerWeek', unit: 'hrs/week' },
-    { label: 'Super Rate', field: 'superRate', unit: '%' },
-    { label: 'Payroll Tax Rate', field: 'payrollTaxRate', unit: '%' },
+    { label: 'Hourly Wage', field: 'hourlyWage', unit: '$/hr' },
     { label: 'Overhead Rate', field: 'overheadRate', unit: '%' },
     { label: 'Drawings per Week', field: 'drawingsPerWeek', unit: 'jobs' },
     { label: 'Manual Checking Time', field: 'checkingHoursPerWeek', unit: 'hrs/week' },
@@ -595,39 +626,39 @@ function S06({ calc, setCalc }) {
     { label: 'Current Match Rate', field: 'currentMatchRate', unit: '%' },
   ]
 
-  const maxSaving = Math.max(...d.scenarios.map(s => s.annualSaving))
-
   return (
     <Wrap justify="flex-start" section="The Solution">
       <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>The Solution</div>
       <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
       <div style={{ fontFamily: F.main, fontSize: '22px', color: C.obsidian, marginBottom: '20px' }}>Calculator — Base Assumptions</div>
 
-      <div style={{ display: 'flex', gap: '32px', flex: 1, minHeight: 0 }}>
+      <div className="space-mono" style={{ display: 'flex', gap: '32px', flex: 1, minHeight: 0 }}>
         {/* Left: editable table */}
         <div style={{ flex: 1, overflowY: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr>
                 {['Parameter', 'Value', 'Source'].map((h, i) => (
-                  <th key={i} style={{ padding: '7px 10px', fontFamily: F.main, fontSize: '9px', letterSpacing: '1.5px', color: C.clay, textTransform: 'uppercase', textAlign: i === 0 ? 'left' : i === 1 ? 'right' : 'left', borderBottom: '1px solid rgba(34,25,12,0.15)', fontWeight: 400 }}>{h}</th>
+                  <th key={i} style={{ padding: '7px 10px', fontSize: '9px', letterSpacing: '1.5px', color: C.clay, textTransform: 'uppercase', textAlign: i === 0 ? 'left' : i === 1 ? 'right' : 'left', borderBottom: '1px solid rgba(34,25,12,0.15)', fontWeight: 400 }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {rows.map(({ label, field, unit }) => (
                 <tr key={field} style={{ borderBottom: '1px solid rgba(34,25,12,0.06)' }}>
-                  <td style={{ padding: '7px 10px 7px 0', fontFamily: F.main, fontSize: '13px', color: C.obsidian, whiteSpace: 'nowrap' }}>
+                  <td style={{ padding: '7px 10px 7px 0', fontSize: '13px', color: C.obsidian, whiteSpace: 'nowrap' }}>
                     {label}
-                    <span style={{ fontFamily: F.main, fontSize: '10px', color: C.lightClay, marginLeft: '5px' }}>{unit}</span>
                   </td>
                   <td style={{ padding: '7px 10px', textAlign: 'right', whiteSpace: 'nowrap' }}>
-                    <input
-                      type="number"
-                      style={inputStyle}
-                      value={calc[field]}
-                      onChange={e => setCalc(prev => ({ ...prev, [field]: parseFloat(e.target.value) || 0 }))}
-                    />
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
+                      <input
+                        type="number"
+                        style={inputStyle}
+                        value={calc[field]}
+                        onChange={e => setCalc(prev => ({ ...prev, [field]: parseFloat(e.target.value) || 0 }))}
+                      />
+                      <span style={{ fontSize: '10px', color: C.lightClay, minWidth: '52px' }}>{unit}</span>
+                    </div>
                   </td>
                   <td style={{ padding: '7px 0 7px 10px' }}>
                     <input
@@ -639,22 +670,16 @@ function S06({ calc, setCalc }) {
                   </td>
                 </tr>
               ))}
-              {/* Derived rows */}
-              <tr style={{ borderBottom: '1px solid rgba(34,25,12,0.06)', background: 'rgba(34,25,12,0.03)' }}>
-                <td style={{ padding: '7px 10px 7px 0', fontFamily: F.main, fontSize: '13px', color: C.obsidian, fontStyle: 'italic' }}>
-                  Base Hourly Rate <span style={{ fontSize: '10px', color: C.lightClay }}>(derived)</span>
-                </td>
-                <td style={{ padding: '7px 10px', textAlign: 'right', fontFamily: F.main, fontSize: '13px', color: C.obsidian }}>
-                  ${d.baseHourlyRate.toFixed(2)}/hr
-                </td>
-                <td />
-              </tr>
+              {/* Derived row */}
               <tr style={{ background: 'rgba(34,25,12,0.03)' }}>
-                <td style={{ padding: '7px 10px 7px 0', fontFamily: F.main, fontSize: '13px', color: C.obsidian, fontStyle: 'italic' }}>
+                <td style={{ padding: '7px 10px 7px 0', fontSize: '13px', color: C.obsidian, fontStyle: 'italic' }}>
                   Fully Loaded Rate <span style={{ fontSize: '10px', color: C.lightClay }}>(derived)</span>
                 </td>
-                <td style={{ padding: '7px 10px', textAlign: 'right', fontFamily: F.main, fontSize: '13px', color: C.obsidian }}>
-                  ${d.loadedRate.toFixed(2)}/hr
+                <td style={{ padding: '7px 10px', textAlign: 'right', fontSize: '13px', color: C.obsidian }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
+                    <span>${d.loadedRate.toFixed(2)}</span>
+                    <span style={{ fontSize: '10px', color: C.lightClay, minWidth: '52px' }}>/hr</span>
+                  </div>
                 </td>
                 <td />
               </tr>
@@ -662,37 +687,15 @@ function S06({ calc, setCalc }) {
           </table>
         </div>
 
-        {/* Right: metrics + chart */}
-        <div style={{ flex: '0 0 270px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {/* Annual checking cost box */}
+        {/* Right: annual checking cost */}
+        <div style={{ flex: '0 0 220px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ background: C.mid, borderRadius: '6px', padding: '16px 18px' }}>
-            <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '2px', color: C.clay, textTransform: 'uppercase', marginBottom: '6px' }}>
+            <div style={{ fontSize: '9px', letterSpacing: '2px', color: C.clay, textTransform: 'uppercase', marginBottom: '6px' }}>
               Annual Checking Cost (Current)
             </div>
-            <div style={{ fontFamily: F.main, fontSize: '28px', color: C.red, lineHeight: 1 }}>
+            <div style={{ fontSize: '28px', color: C.red, lineHeight: 1 }}>
               ${Math.round(d.annualCheckingCost).toLocaleString()}
             </div>
-          </div>
-
-          {/* Projected savings chart */}
-          <div style={{ flex: 1, background: C.mid, borderRadius: '6px', padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '2px', color: C.clay, textTransform: 'uppercase', marginBottom: '4px' }}>
-              Projected Annual Savings
-            </div>
-            {d.scenarios.map(s => (
-              <div key={s.name}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '3px' }}>
-                  <span style={{ fontFamily: F.main, fontSize: '11px', color: C.obsidian }}>{s.name}</span>
-                  <span style={{ fontFamily: F.main, fontSize: '11px', color: C.clay }}>${Math.round(s.annualSaving).toLocaleString()}</span>
-                </div>
-                <div style={{ height: '6px', background: 'rgba(34,25,12,0.1)', borderRadius: '3px', marginBottom: '3px' }}>
-                  <div style={{ height: '100%', width: `${(s.annualSaving / maxSaving) * 100}%`, background: s.isBase ? C.clay : C.lightClay, borderRadius: '3px' }} />
-                </div>
-                <div style={{ fontFamily: F.main, fontSize: '10px', color: C.lightClay }}>
-                  {s.totalWeeklyHoursSaved.toFixed(1)} hrs/wk saved
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </div>
@@ -708,21 +711,21 @@ function S07({ calc }) {
       <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>The Solution</div>
       <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
       <div style={{ fontFamily: F.main, fontSize: '24px', color: C.obsidian, marginBottom: '28px' }}>
-        Based on current parameters, payback from <span style={{ color: C.red }}>{d.scenarios[0].paybackMonths.toFixed(1)} months</span> (conservative)
+        Based on current parameters, payback from <span style={{ color: C.red }}>{d.scenarios[1].paybackMonths.toFixed(1)} months</span> (base case)
       </div>
       <div style={{ display: 'flex', gap: '14px', flex: 1 }}>
         {d.scenarios.map((s) => (
           <div key={s.name} style={{ flex: 1, background: s.isBase ? C.clay : C.mid, borderRadius: '6px', padding: '24px 20px', display: 'flex', flexDirection: 'column' }}>
-            <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '2px', color: s.isBase ? 'rgba(244,240,237,0.6)' : C.lightClay, textTransform: 'uppercase', marginBottom: '3px' }}>{s.name}</div>
+            <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '2px', color: s.isBase ? 'rgba(244,240,237,0.6)' : C.lightClay, marginBottom: '3px' }}>{s.name}</div>
             <div style={{ fontFamily: F.main, fontSize: '12px', color: s.isBase ? C.parchment : C.clay, marginBottom: '16px' }}>+{s.matchImp}% match rate</div>
             <div style={{ height: '1px', background: s.isBase ? 'rgba(244,240,237,0.2)' : 'rgba(34,25,12,0.1)', margin: '0 0 18px' }} />
             <div style={{ marginBottom: '18px' }}>
               <div style={{ fontFamily: F.main, fontSize: '34px', lineHeight: 1, color: s.isBase ? C.parchment : C.obsidian }}>${Math.round(s.annualSaving).toLocaleString()}</div>
-              <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: s.isBase ? 'rgba(244,240,237,0.55)' : C.lightClay, marginTop: '4px', textTransform: 'uppercase' }}>Annual Labour Saving</div>
+              <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: s.isBase ? 'rgba(244,240,237,0.55)' : C.lightClay, marginTop: '4px' }}>Annual Labour Saving</div>
             </div>
             <div style={{ marginBottom: '18px' }}>
               <div style={{ fontFamily: F.main, fontSize: '26px', lineHeight: 1, color: s.isBase ? C.parchment : C.obsidian }}>{s.paybackMonths.toFixed(1)} mo</div>
-              <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: s.isBase ? 'rgba(244,240,237,0.55)' : C.lightClay, marginTop: '4px', textTransform: 'uppercase' }}>Simple Payback</div>
+              <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: s.isBase ? 'rgba(244,240,237,0.55)' : C.lightClay, marginTop: '4px' }}>Simple Payback</div>
             </div>
             <div style={{ height: '1px', background: s.isBase ? 'rgba(244,240,237,0.2)' : 'rgba(34,25,12,0.1)', margin: '0 0 14px' }} />
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginBottom: '14px' }}>
@@ -764,7 +767,7 @@ function S08({ calc }) {
       tag: 'Core functionality',
       devCost: 38000,
       apiCost: 1339,
-      maintCost: 3000,
+      maintCost: 2000,
       features: [
         'MS Access database integration',
         'Full 15-factor weighted AI scoring',
@@ -792,11 +795,11 @@ function S08({ calc }) {
     },
     {
       num: 'Proposal 3',
-      name: 'Super System',
+      name: 'Enterprise',
       tag: 'Full feature set',
       devCost: 95000,
       apiCost: 1339,
-      maintCost: 3000,
+      maintCost: 4000,
       features: [
         'Everything in Proposal 2',
         'Automated new-job notifications',
@@ -830,11 +833,11 @@ function S08({ calc }) {
               position: 'relative',
             }}>
               {isRec && (
-                <div style={{ position: 'absolute', top: '-11px', left: '18px', background: C.red, borderRadius: '3px', padding: '2px 10px', fontFamily: F.main, fontSize: '9px', letterSpacing: '2px', color: C.parchment, textTransform: 'uppercase' }}>
+                <div style={{ position: 'absolute', top: '-11px', left: '18px', background: C.red, borderRadius: '3px', padding: '2px 10px', fontFamily: F.main, fontSize: '9px', letterSpacing: '2px', color: C.parchment }}>
                   Recommended
                 </div>
               )}
-              <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '2px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay, textTransform: 'uppercase', marginBottom: '2px' }}>{p.num}</div>
+              <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '2px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay, marginBottom: '2px' }}>{p.num}</div>
               <div style={{ fontFamily: F.main, fontSize: '20px', color: isRec ? C.parchment : C.obsidian, marginBottom: '4px' }}>{p.name}</div>
               <div style={{ height: '1px', background: isRec ? 'rgba(244,240,237,0.2)' : 'rgba(34,25,12,0.12)', margin: '10px 0' }} />
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '5px', marginBottom: '14px' }}>
@@ -860,15 +863,15 @@ function S08({ calc }) {
               </div>
               <div style={{ background: isRec ? 'rgba(244,240,237,0.15)' : 'rgba(34,25,12,0.08)', borderRadius: '4px', padding: '10px 12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
-                  <span style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay, textTransform: 'uppercase' }}>Year 1 Total</span>
+                  <span style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay }}>Year 1 Total</span>
                   <span style={{ fontFamily: F.main, fontSize: '18px', color: isRec ? C.parchment : C.obsidian }}>${totalY1.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
-                  <span style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay, textTransform: 'uppercase' }}>Year 2+</span>
+                  <span style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay }}>Year 2+</span>
                   <span style={{ fontFamily: F.main, fontSize: '13px', color: isRec ? 'rgba(244,240,237,0.75)' : C.clay }}>${totalY2.toLocaleString()} / yr</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                  <span style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay, textTransform: 'uppercase' }}>Base Payback</span>
+                  <span style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay }}>Base Payback</span>
                   <span style={{ fontFamily: F.main, fontSize: '13px', color: isRec ? 'rgba(244,240,237,0.75)' : C.clay }}>{payback} mo</span>
                 </div>
               </div>
@@ -884,9 +887,8 @@ function S08({ calc }) {
 function S09() {
   const phases = [
     {
-      weeks: 'Weeks 1–3',
+      period: 'Weeks 1–3',
       title: 'Foundation & Core Build',
-      color: C.clay,
       items: [
         'Requirements gathering and technical scoping',
         'MS Access database integration and indexing',
@@ -896,9 +898,8 @@ function S09() {
       ],
     },
     {
-      weeks: 'Weeks 4–6',
+      period: 'Weeks 4–6',
       title: 'Refinement & Deployment',
-      color: C.obsidian,
       items: [
         'AI model tuning based on drafter feedback',
         'Result scoring and ranking refinement',
@@ -908,9 +909,8 @@ function S09() {
       ],
     },
     {
-      weeks: 'Week 7+',
+      period: 'Week 7+',
       title: 'Live & Maintained',
-      color: C.lightClay,
       items: [
         'Ongoing performance monitoring',
         'Continuous improvement from drafter feedback',
@@ -921,30 +921,49 @@ function S09() {
   ]
   return (
     <Wrap justify="flex-start" section="The Solution">
-      <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>The Solution</div>
-      <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
-      <div style={{ fontFamily: F.main, fontSize: '26px', color: C.obsidian, marginBottom: '28px' }}>Timeline &amp; Next Steps</div>
-      <div style={{ display: 'flex', gap: '16px', marginBottom: '28px', flex: 1 }}>
+      <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '32px' }}>Timeline</div>
+
+      {/* Period labels */}
+      <div style={{ display: 'flex', marginBottom: '24px' }}>
         {phases.map((p, i) => (
           <div key={i} style={{ flex: 1 }}>
-            <div style={{ height: '4px', background: p.color, borderRadius: '2px', marginBottom: '18px' }} />
-            <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '2px', color: p.color, marginBottom: '8px' }}>{p.weeks}</div>
-            <div style={{ fontFamily: F.main, fontSize: '17px', color: C.obsidian, marginBottom: '14px' }}>{p.title}</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+            <div style={{ fontFamily: F.main, fontSize: '22px', color: C.obsidian }}>{p.period}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Horizontal timeline line + dots */}
+      <div style={{ position: 'relative', marginBottom: '28px', height: '12px' }}>
+        {/* Line */}
+        <div style={{ position: 'absolute', top: '50%', left: '0', right: '0', height: '1px', background: 'rgba(0,0,0,0.18)', transform: 'translateY(-50%)' }} />
+        {/* Dots */}
+        <div style={{ display: 'flex', position: 'relative' }}>
+          {phases.map((_, i) => (
+            <div key={i} style={{ flex: 1 }}>
+              <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: C.red }} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Content below timeline */}
+      <div style={{ display: 'flex', flex: 1, marginBottom: '24px' }}>
+        {phases.map((p, i) => (
+          <div key={i} style={{ flex: 1, paddingRight: '32px' }}>
+            <div style={{ fontFamily: F.main, fontSize: '18px', color: C.obsidian, marginBottom: '12px', lineHeight: 1.3 }}>{p.title}</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {p.items.map((item, j) => (
-                <div key={j} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                  <div style={{ width: '5px', height: '5px', background: p.color, borderRadius: '50%', marginTop: '7px', flexShrink: 0 }} />
-                  <div style={{ fontFamily: F.main, fontSize: '13px', color: C.obsidian, opacity: 0.78, lineHeight: 1.4 }}>{item}</div>
-                </div>
+                <div key={j} style={{ fontFamily: F.main, fontSize: '12px', color: C.obsidian, opacity: 0.65, lineHeight: 1.5 }}>{item}</div>
               ))}
             </div>
           </div>
         ))}
       </div>
-      <div style={{ background: C.red, borderRadius: '4px', padding: '14px 22px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '2px', color: C.parchment }}>NEXT STEP</div>
-        <div style={{ width: '1px', height: '18px', background: 'rgba(244,240,237,0.35)' }} />
-        <div style={{ fontFamily: F.main, fontSize: '17px', color: C.parchment }}>Begin development of solution when letter of engagement signed</div>
+
+      <div style={{ background: C.white, border: '1.5px solid #000', borderRadius: '4px', padding: '14px 22px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '2px', color: '#000' }}>Next step</div>
+        <div style={{ width: '1px', height: '18px', background: 'rgba(0,0,0,0.25)' }} />
+        <div style={{ fontFamily: F.main, fontSize: '17px', color: '#000' }}>Begin development of solution when letter of engagement signed</div>
       </div>
     </Wrap>
   )
@@ -954,7 +973,7 @@ function S09() {
 function S10() {
   return (
     <div style={{
-      width: '100%', minHeight: 'calc(100vh - 104px)',
+      width: '100%', height: '100%',
       background: C.obsidian,
       display: 'flex', flexDirection: 'column',
       padding: '40px 56px',
@@ -962,10 +981,10 @@ function S10() {
     }}>
       {/* Top bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.7)', textTransform: 'uppercase' }}>
+        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.7)' }}>
           Queensland Steel House Frames
         </div>
-        <img src="/clearai-logo.png" alt="ClearAI" style={{ height: '22px' }} />
+        <img src={`${import.meta.env.BASE_URL}clearai-logo.png`} alt="ClearAI" style={{ height: '22px' }} />
       </div>
 
       {/* Middle: Thank You */}
@@ -983,10 +1002,10 @@ function S10() {
 
       {/* Bottom bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.55)', textTransform: 'uppercase' }}>
-          AI Drafting Copy Agent — Proposal 18-03-2026
+        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.55)' }}>
+          AI Drafting Copy Agent — Proposal 25-03-2026
         </div>
-        <DotIcon size={13} gap={5} color={C.red} />
+        <DotIcon size={13} gap={0} color={C.red} />
       </div>
     </div>
   )
@@ -1014,7 +1033,7 @@ function S11() {
             )}
             <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: C.clay, color: C.parchment, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: F.main, fontSize: '11px', fontWeight: 700, position: 'relative', zIndex: 1, marginBottom: '14px' }}>{s.num}</div>
             <div style={{ padding: '0 10px', textAlign: 'center' }}>
-              <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '1px', color: C.clay, marginBottom: '7px', textTransform: 'uppercase' }}>{s.title}</div>
+              <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '1px', color: C.clay, marginBottom: '7px' }}>{s.title}</div>
               <div style={{ fontFamily: F.main, fontSize: '12px', color: C.obsidian, lineHeight: 1.5, opacity: 0.78 }}>{s.desc}</div>
             </div>
           </div>
@@ -1050,7 +1069,7 @@ function S12() {
       <thead>
         <tr>
           {['Category', 'Weight', 'Impact'].map((h, i) => (
-            <th key={i} style={{ padding: '9px 12px', background: C.obsidian, fontFamily: F.main, fontSize: '9px', letterSpacing: '1.5px', color: C.parchment, textAlign: i === 0 ? 'left' : 'center', textTransform: 'uppercase' }}>{h}</th>
+            <th key={i} style={{ padding: '9px 12px', background: C.obsidian, fontFamily: F.main, fontSize: '9px', letterSpacing: '1.5px', color: C.parchment, textAlign: i === 0 ? 'left' : 'center' }}>{h}</th>
           ))}
         </tr>
       </thead>
@@ -1089,7 +1108,7 @@ function S13() {
         <thead>
           <tr>
             {['Cost Component', 'Pricing Tier', 'Annual Total (AUD)', 'Purpose'].map((h, i) => (
-              <th key={i} style={{ padding: '10px 16px', background: C.obsidian, fontFamily: F.main, fontSize: '10px', letterSpacing: '1.5px', color: C.parchment, textAlign: i === 0 ? 'left' : 'center', textTransform: 'uppercase' }}>{h}</th>
+              <th key={i} style={{ padding: '10px 16px', background: C.obsidian, fontFamily: F.main, fontSize: '10px', letterSpacing: '1.5px', color: C.parchment, textAlign: i === 0 ? 'left' : 'center' }}>{h}</th>
             ))}
           </tr>
         </thead>
@@ -1108,10 +1127,56 @@ function S13() {
         </tbody>
       </table>
       <div style={{ background: C.mid, borderRadius: '4px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '1.5px', color: C.clay }}>TOTAL ANNUAL API COST</div>
+        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '1.5px', color: C.clay }}>Total annual API cost</div>
         <div style={{ fontFamily: F.main, fontSize: '24px', color: C.clay, fontWeight: 700 }}>$1,333.50 / year</div>
       </div>
     </Wrap>
+  )
+}
+
+/* ── SLIDE 14: EXPORT PDF ── */
+function S14({ exportPDF }) {
+  return (
+    <div style={{
+      width: '100%', height: '100%',
+      background: C.obsidian,
+      display: 'flex', flexDirection: 'column',
+      padding: '40px 56px',
+      boxSizing: 'border-box',
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.7)' }}>
+          Queensland Steel House Frames
+        </div>
+        <img src={`${import.meta.env.BASE_URL}clearai-logo.png`} alt="ClearAI" style={{ height: '22px' }} />
+      </div>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '28px' }}>
+        <div style={{ fontFamily: F.main, fontSize: 'clamp(32px, 4vw, 56px)', color: '#F4F0ED', lineHeight: 1.1, textAlign: 'center' }}>
+          Export this Presentation
+        </div>
+        <button
+          onClick={exportPDF}
+          style={{
+            fontFamily: F.main, fontSize: '15px',
+            background: C.red, color: C.parchment,
+            border: 'none', borderRadius: '4px',
+            padding: '14px 40px', cursor: 'pointer',
+            letterSpacing: '2px',
+          }}
+        >
+          Export PDF
+        </button>
+        <div style={{ fontFamily: F.main, fontSize: '12px', color: 'rgba(244,240,237,0.35)', letterSpacing: '1px' }}>
+          Generates a PDF of all slides
+        </div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.55)' }}>
+          AI Drafting Copy Agent — Proposal 25-03-2026
+        </div>
+        <DotIcon size={13} gap={0} color={C.red} />
+      </div>
+    </div>
   )
 }
 
@@ -1202,9 +1267,9 @@ const QSHFPitchDeck = forwardRef(function QSHFPitchDeck(_props, ref) {
         .sil { animation: slideInL 0.32s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
       `}</style>
 
-      <div ref={captureRef} style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
-        <div key={isExporting ? 'export' : animKey} className={isExporting ? '' : (animDir === 'right' ? 'sir' : 'sil')} style={{ width: '100%', minHeight: '100%' }}>
-          <SlideContent calc={calc} setCalc={setCalc} />
+      <div ref={captureRef} style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+        <div key={isExporting ? 'export' : animKey} className={isExporting ? '' : (animDir === 'right' ? 'sir' : 'sil')} style={{ width: '100%', height: '100%' }}>
+          <SlideContent calc={calc} setCalc={setCalc} exportPDF={exportPDF} />
         </div>
       </div>
 
@@ -1225,6 +1290,17 @@ const QSHFPitchDeck = forwardRef(function QSHFPitchDeck(_props, ref) {
         <div style={{ fontFamily: F.main, fontSize: '10px', color: 'rgba(244,240,237,0.4)', letterSpacing: '1px' }}>
           {String(slide + 1).padStart(2, '0')} / {String(TOTAL).padStart(2, '0')}
         </div>
+
+        <button
+          onClick={exportPDF}
+          disabled={isExporting}
+          title="Export PDF"
+          style={{ background: 'transparent', border: '1px solid rgba(244,240,237,0.25)', color: isExporting ? 'rgba(244,240,237,0.2)' : C.parchment, width: '30px', height: '30px', borderRadius: '4px', cursor: isExporting ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
+        >
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.5 1v7M3.5 5.5l3 3 3-3M2 10.5h9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
 
         <button
           onClick={next}
