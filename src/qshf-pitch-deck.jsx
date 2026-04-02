@@ -12,7 +12,7 @@ const C = {
   white: '#FFFFFF',
 }
 const F = { main: "'Thorndale AMT Regular', 'Thorndale AMT', 'Times New Roman', serif" }
-const TOTAL = 14
+const TOTAL = 15
 
 const DEFAULT_CALC = {
   hourlyWage: 41.03,
@@ -106,7 +106,7 @@ function DotIcon({ size = 13, gap = 5, color = C.red }) {
 
 /* Footer used on white slides (2–5) */
 function SlideFooter({ section }) {
-  const footerTextStyle = { fontSize: '9px', letterSpacing: '2.5px', textTransform: 'uppercase', color: 'rgba(0,0,0,0.45)' }
+  const footerTextStyle = { fontSize: '9px', textTransform: 'uppercase', color: 'rgba(0,0,0,0.45)' }
   return (
     <div className="space-mono" style={{
       height: '40px', borderTop: '1px solid rgba(0,0,0,0.1)',
@@ -116,7 +116,7 @@ function SlideFooter({ section }) {
       <img src={`${import.meta.env.BASE_URL}clearai-logo-dark.png`} alt="ClearAI" style={{ height: '16px' }} />
       <div style={{ display: 'flex', gap: '40px', alignItems: 'center' }}>
         <span style={footerTextStyle}>Queensland Steel House Frames</span>
-        <span style={footerTextStyle}>Proposal 25-03-2026</span>
+        <span style={footerTextStyle}>Proposal 09-04-2026</span>
       </div>
       <div style={footerTextStyle}>{section}</div>
     </div>
@@ -148,7 +148,7 @@ function S00() {
     }}>
       {/* Top bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.7)' }}>
+        <div style={{ fontFamily: F.main, fontSize: '10px', color: 'rgba(244,240,237,0.7)' }}>
           Queensland Steel House Frames
         </div>
         <img src={`${import.meta.env.BASE_URL}clearai-logo.png`} alt="ClearAI" style={{ height: '22px' }} />
@@ -170,8 +170,8 @@ function S00() {
 
       {/* Bottom bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.55)' }}>
-          Proposal 25-03-2026
+        <div style={{ fontFamily: F.main, fontSize: '10px', color: 'rgba(244,240,237,0.55)' }}>
+          Proposal 09-04-2026
         </div>
         <DotIcon size={13} gap={0} color={C.red} />
       </div>
@@ -209,7 +209,7 @@ function ProcessDiagram() {
         padding: '10px 16px',
         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px',
       }}>
-        <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '2px', color: C.clay, marginBottom: '4px' }}>
+        <div style={{ fontFamily: F.main, fontSize: '9px', color: C.clay, marginBottom: '4px' }}>
           For each potential copy in MS Access
         </div>
         <div style={nodeStyle('#5a3525')}>
@@ -218,20 +218,20 @@ function ProcessDiagram() {
         <Arrow />
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
-            <div style={{ fontFamily: F.main, fontSize: '10px', color: C.red, letterSpacing: '1px', padding: '1px 0' }}>Bad copy</div>
+            <div style={{ fontFamily: F.main, fontSize: '10px', color: C.red, padding: '1px 0' }}>Bad copy</div>
             <div style={{ ...nodeStyle('#f0e8e5', '#555'), border: '1px solid #ddd' }}>
               Skip — look for another candidate
             </div>
           </div>
           <div style={{ width: '1px', background: 'rgba(0,0,0,0.1)', margin: '8px 0' }} />
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
-            <div style={{ fontFamily: F.main, fontSize: '10px', color: C.clay, letterSpacing: '1px', padding: '1px 0' }}>Good copy</div>
+            <div style={{ fontFamily: F.main, fontSize: '10px', color: C.clay, padding: '1px 0' }}>Good copy</div>
             <div style={nodeStyle('#a06045')}>
               Write down differences and email details to another drafter
             </div>
           </div>
         </div>
-        <div style={{ marginTop: '4px', fontFamily: F.main, fontSize: '10px', color: C.clay, letterSpacing: '1px' }}>
+        <div style={{ marginTop: '4px', fontFamily: F.main, fontSize: '10px', color: C.clay }}>
           ↻ Continue to next candidate
         </div>
       </div>
@@ -240,6 +240,194 @@ function ProcessDiagram() {
         Repeat until a few decent candidates are found
       </div>
     </div>
+  )
+}
+
+/* ── SLIDE 1B: THE BUSINESS VALUE CHAIN ── */
+function SVC() {
+  const BW = 78, BH = 52
+  const STEP = 108
+  const BY = 74
+  const xs = Array.from({ length: 9 }, (_, i) => 14 + i * STEP)
+  const CY = BY + BH / 2
+  const VBW = xs[8] + BW + 14
+  const VBH = 192
+
+  // Drafting category bracket (items 1,2,3)
+  const bx1 = xs[1] - 8, bx2 = xs[3] + BW + 8
+  const by1 = BY - 28, by2 = BY + BH + 32
+
+  const ic = C.clay
+  const sw = { stroke: ic, strokeWidth: 1.5, fill: 'none', strokeLinecap: 'round', strokeLinejoin: 'round' }
+
+  const SalesIcon = () => (
+    <g {...sw}>
+      <rect x="-9" y="-5" width="18" height="13" rx="2" />
+      <path d="M-4,-5 L-4,-9 Q0,-12 4,-9 L4,-5" />
+      <line x1="-9" y1="1" x2="9" y2="1" />
+      <rect x="-1.5" y="-1" width="3" height="4" />
+    </g>
+  )
+
+  const CopyCheckIcon = () => (
+    <g strokeLinecap="round" strokeLinejoin="round">
+      <rect x="-3" y="-12" width="13" height="17" rx="1.5" fill={C.mid} stroke={ic} strokeWidth={1.5} />
+      <rect x="-10" y="-8" width="13" height="17" rx="1.5" fill={C.white} stroke={ic} strokeWidth={1.5} />
+      <line x1="-7" y1="-3" x2="0" y2="-3" stroke={ic} strokeWidth={1.2} />
+      <line x1="-7" y1="0" x2="0" y2="0" stroke={ic} strokeWidth={1.2} />
+      <line x1="-7" y1="3" x2="0" y2="3" stroke={ic} strokeWidth={1.2} />
+    </g>
+  )
+
+  const DraftingIcon = () => (
+    <g {...sw}>
+      <polygon points="-3.5,-12 3.5,-12 5,7 0,12 -5,7" />
+      <line x1="-3.5" y1="-7" x2="3.5" y2="-7" />
+      <line x1="0" y1="-7" x2="0" y2="7" strokeWidth={0.8} strokeDasharray="2 2" />
+    </g>
+  )
+
+  const QAIcon = () => (
+    <g {...sw}>
+      <circle cx="-1" cy="-2" r="9" />
+      <line x1="6" y1="5" x2="11" y2="10" strokeWidth={2.5} />
+      <polyline points="-5,-2 -2,2 5,-5" />
+    </g>
+  )
+
+  const EngineerIcon = () => (
+    <g {...sw}>
+      <path d="M-12,4 Q-11,-9 0,-12 Q11,-9 12,4 Z" />
+      <rect x="-13" y="4" width="26" height="5" rx="1" />
+      <line x1="-4" y1="-12" x2="-4" y2="-4" strokeWidth={0.8} />
+      <line x1="4" y1="-12" x2="4" y2="-4" strokeWidth={0.8} />
+    </g>
+  )
+
+  const SigningIcon = () => (
+    <g {...sw}>
+      <g transform="rotate(-40)">
+        <rect x="-2" y="-12" width="4" height="15" rx="1" />
+        <polygon points="-2.5,3 2.5,3 0,9" fill={ic} stroke="none" />
+      </g>
+      <path d="M-11,9 C-7,3 -3,14 0,9 C3,4 7,13 11,9" fill="none" />
+    </g>
+  )
+
+  const SendIcon = () => (
+    <g {...sw}>
+      <polygon points="-12,5 12,0 -12,-5 -7,0" fill={C.mid} />
+      <line x1="-7" y1="0" x2="-12" y2="5" />
+    </g>
+  )
+
+  const ManufactureIcon = () => (
+    <g {...sw}>
+      <rect x="-10" y="-3" width="20" height="12" rx="1" />
+      <rect x="-8" y="-11" width="4" height="8" rx="1" />
+      <rect x="4" y="-8" width="4" height="5" rx="1" />
+      <rect x="-3" y="3" width="6" height="6" />
+    </g>
+  )
+
+  const ShipIcon = () => (
+    <g {...sw}>
+      <rect x="-12" y="-7" width="14" height="13" rx="1" />
+      <path d="M2,-7 L2,6 L13,6 L13,-1 L8,-7 Z" />
+      <rect x="4" y="-5" width="5" height="4" rx="0.5" fill={C.mid} />
+      <circle cx="-5" cy="8" r="3" fill={C.mid} />
+      <circle cx="9" cy="8" r="3" fill={C.mid} />
+    </g>
+  )
+
+  const icons = [SalesIcon, CopyCheckIcon, DraftingIcon, QAIcon, EngineerIcon, SigningIcon, SendIcon, ManufactureIcon, ShipIcon]
+  const labels = ['Sales', 'Copy\nChecking', 'Drafting', 'Quality\nAssurance', 'Engineer', 'Signing', 'Send', 'Manufacture', 'Ship to\nCustomer']
+
+  return (
+    <WhiteSlide section="The Business Value Chain">
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '28px 44px 16px', boxSizing: 'border-box', overflow: 'hidden' }}>
+        <div style={{ fontFamily: F.main, fontSize: '42px', lineHeight: 1.05, color: '#000', marginBottom: '12px' }}>
+          The Business Value Chain
+        </div>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <svg viewBox={`0 0 ${VBW} ${VBH}`} width="100%" style={{ overflow: 'visible' }}>
+
+            {/* Drafting category bracket */}
+            <rect x={bx1} y={by1} width={bx2 - bx1} height={by2 - by1}
+              rx={5} fill={C.parchment} fillOpacity={0.6}
+              stroke={C.clay} strokeWidth={1} strokeDasharray="5 3"
+            />
+            <rect x={(bx1 + bx2) / 2 - 30} y={by1 - 9} width={60} height={17} rx={3} fill={C.white} />
+            <text x={(bx1 + bx2) / 2} y={by1 + 4}
+              textAnchor="middle" fontFamily={F.main} fontSize={10} fill={C.clay}
+            >Drafting</text>
+
+            {/* Arrows */}
+            {Array.from({ length: 8 }, (_, i) => {
+              const x1 = xs[i] + BW + 2
+              const x2 = xs[i + 1] - 2
+              return (
+                <g key={i}>
+                  <line x1={x1} y1={CY} x2={x2 - 7} y2={CY}
+                    stroke={C.clay} strokeWidth={1.5} opacity={0.65}
+                  />
+                  <polygon
+                    points={`${x2},${CY} ${x2 - 7},${CY - 3.5} ${x2 - 7},${CY + 3.5}`}
+                    fill={C.clay} opacity={0.65}
+                  />
+                </g>
+              )
+            })}
+
+            {/* Boxes + icons */}
+            {icons.map((Icon, i) => {
+              const x = xs[i]
+              const isCopyCheck = i === 1
+              return (
+                <g key={i}>
+                  <rect
+                    x={x} y={BY} width={BW} height={BH} rx={5}
+                    fill={C.white}
+                    stroke={isCopyCheck ? C.red : C.clay}
+                    strokeWidth={isCopyCheck ? 2.5 : 1}
+                    opacity={isCopyCheck ? 1 : 0.75}
+                  />
+                  <g transform={`translate(${x + BW / 2}, ${BY + BH / 2 - 2})`}>
+                    <Icon />
+                  </g>
+                </g>
+              )
+            })}
+
+            {/* Labels below boxes */}
+            {labels.map((label, i) => {
+              const lines = label.split('\n')
+              const x = xs[i] + BW / 2
+              return lines.map((line, j) => (
+                <text key={`${i}-${j}`}
+                  x={x} y={BY + BH + 15 + j * 13}
+                  textAnchor="middle"
+                  fontFamily={F.main} fontSize={11}
+                  fill={C.obsidian}
+                >
+                  {line}
+                </text>
+              ))
+            })}
+
+            {/* Green tick badge on Signing (index 5) */}
+            <g transform={`translate(${xs[5] + BW - 4}, ${BY - 4})`}>
+              <circle cx={0} cy={0} r={9} fill="#27ae60" />
+              <polyline points="-4,0 -1,4 5,-4"
+                stroke="white" strokeWidth={2} fill="none"
+                strokeLinecap="round" strokeLinejoin="round"
+              />
+            </g>
+
+          </svg>
+        </div>
+      </div>
+    </WhiteSlide>
   )
 }
 
@@ -290,7 +478,7 @@ function WeekCalendar() {
         {days.map((d, i) => (
           <div key={i} style={{ flex: 1, padding: '5px 6px', borderLeft: i > 0 ? '1px solid #dadce0' : 'none', textAlign: 'center' }}>
             <div style={{ fontSize: '14px', color: '#1a73e8', lineHeight: 1 }}>{d.num}</div>
-            <div style={{ fontSize: '9px', color: '#70757a', letterSpacing: '0.3px', marginTop: '1px' }}>{d.name}</div>
+            <div style={{ fontSize: '9px', color: '#70757a', marginTop: '1px' }}>{d.name}</div>
           </div>
         ))}
       </div>
@@ -316,7 +504,7 @@ function WeekCalendar() {
               background: '#c2d7f0', border: '2px solid #4285f4', borderRadius: '4px',
               padding: '4px 5px', display: 'flex', alignItems: 'flex-start',
             }}>
-              <span style={{ fontSize: '8px', color: '#1a55a8', fontWeight: 700, letterSpacing: '0.2px', lineHeight: 1.3 }}>
+              <span style={{ fontSize: '8px', color: '#1a55a8', fontWeight: 700, lineHeight: 1.3 }}>
                 DRAFTING COPY CHECK!
               </span>
             </div>
@@ -528,13 +716,13 @@ function S03() {
         {/* Left: two problem paragraphs, centred vertically */}
         <div style={{ flex: '0 0 38%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '36px 44px 36px 56px' }}>
           <div style={{ marginBottom: '36px' }}>
-            <div style={{ fontFamily: F.main, fontSize: '11px', letterSpacing: '1.5px', color: C.clay, marginBottom: '10px' }}>The Volume Problem</div>
+            <div style={{ fontFamily: F.main, fontSize: '11px', color: C.clay, marginBottom: '10px' }}>The Volume Problem</div>
             <div style={{ fontFamily: F.main, fontSize: '17px', lineHeight: 1.6, color: '#000' }}>
               Your database grows every week. Manual searching <span style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}>cannot keep up.</span> More jobs means more searching. Copy check costs grow with every drawing added.
             </div>
           </div>
           <div>
-            <div style={{ fontFamily: F.main, fontSize: '11px', letterSpacing: '1.5px', color: C.clay, marginBottom: '10px' }}>The Inconsistency Problem</div>
+            <div style={{ fontFamily: F.main, fontSize: '11px', color: C.clay, marginBottom: '10px' }}>The Inconsistency Problem</div>
             <div style={{ fontFamily: F.main, fontSize: '17px', lineHeight: 1.6, color: '#000' }}>
               Drafters search differently. Good copies get missed. Worse ones get used instead.
             </div>
@@ -558,7 +746,6 @@ function S04() {
         <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>
           The Solution
         </div>
-        <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '0' }} />
         {/* Centred subtitle */}
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ fontFamily: F.main, fontSize: '36px', lineHeight: 1.2, color: '#000', fontWeight: 400, whiteSpace: 'nowrap' }}>
@@ -578,7 +765,6 @@ function S05() {
         <div style={{ fontFamily: F.main, fontSize: '46px', lineHeight: 1.05, color: '#000', marginBottom: '12px' }}>
           The Solution
         </div>
-        <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '14px' }} />
         <div style={{ fontFamily: F.main, fontSize: '18px', color: C.obsidian, marginBottom: '8px' }}>
           Costs flatten as your database grows
         </div>
@@ -629,7 +815,6 @@ function S06({ calc, setCalc }) {
   return (
     <Wrap justify="flex-start" section="The Solution">
       <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>The Solution</div>
-      <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
       <div style={{ fontFamily: F.main, fontSize: '22px', color: C.obsidian, marginBottom: '20px' }}>Calculator — Base Assumptions</div>
 
       <div className="space-mono" style={{ display: 'flex', gap: '32px', flex: 1, minHeight: 0 }}>
@@ -639,7 +824,7 @@ function S06({ calc, setCalc }) {
             <thead>
               <tr>
                 {['Parameter', 'Value', 'Source'].map((h, i) => (
-                  <th key={i} style={{ padding: '7px 10px', fontSize: '9px', letterSpacing: '1.5px', color: C.clay, textTransform: 'uppercase', textAlign: i === 0 ? 'left' : i === 1 ? 'right' : 'left', borderBottom: '1px solid rgba(34,25,12,0.15)', fontWeight: 400 }}>{h}</th>
+                  <th key={i} style={{ padding: '7px 10px', fontSize: '9px', color: C.clay, textTransform: 'uppercase', textAlign: i === 0 ? 'left' : i === 1 ? 'right' : 'left', borderBottom: '1px solid rgba(34,25,12,0.15)', fontWeight: 400 }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -690,7 +875,7 @@ function S06({ calc, setCalc }) {
         {/* Right: annual checking cost */}
         <div style={{ flex: '0 0 220px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ background: C.mid, borderRadius: '6px', padding: '16px 18px' }}>
-            <div style={{ fontSize: '9px', letterSpacing: '2px', color: C.clay, textTransform: 'uppercase', marginBottom: '6px' }}>
+            <div style={{ fontSize: '9px', color: C.clay, textTransform: 'uppercase', marginBottom: '6px' }}>
               Annual Checking Cost (Current)
             </div>
             <div style={{ fontSize: '28px', color: C.red, lineHeight: 1 }}>
@@ -709,23 +894,22 @@ function S07({ calc }) {
   return (
     <Wrap justify="flex-start" section="The Solution">
       <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>The Solution</div>
-      <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
       <div style={{ fontFamily: F.main, fontSize: '24px', color: C.obsidian, marginBottom: '28px' }}>
         Based on current parameters, payback from <span style={{ color: C.red }}>{d.scenarios[1].paybackMonths.toFixed(1)} months</span> (base case)
       </div>
       <div style={{ display: 'flex', gap: '14px', flex: 1 }}>
         {d.scenarios.map((s) => (
           <div key={s.name} style={{ flex: 1, background: s.isBase ? C.clay : C.mid, borderRadius: '6px', padding: '24px 20px', display: 'flex', flexDirection: 'column' }}>
-            <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '2px', color: s.isBase ? 'rgba(244,240,237,0.6)' : C.lightClay, marginBottom: '3px' }}>{s.name}</div>
+            <div style={{ fontFamily: F.main, fontSize: '10px', color: s.isBase ? 'rgba(244,240,237,0.6)' : C.lightClay, marginBottom: '3px' }}>{s.name}</div>
             <div style={{ fontFamily: F.main, fontSize: '12px', color: s.isBase ? C.parchment : C.clay, marginBottom: '16px' }}>+{s.matchImp}% match rate</div>
             <div style={{ height: '1px', background: s.isBase ? 'rgba(244,240,237,0.2)' : 'rgba(34,25,12,0.1)', margin: '0 0 18px' }} />
             <div style={{ marginBottom: '18px' }}>
               <div style={{ fontFamily: F.main, fontSize: '34px', lineHeight: 1, color: s.isBase ? C.parchment : C.obsidian }}>${Math.round(s.annualSaving).toLocaleString()}</div>
-              <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: s.isBase ? 'rgba(244,240,237,0.55)' : C.lightClay, marginTop: '4px' }}>Annual Labour Saving</div>
+              <div style={{ fontFamily: F.main, fontSize: '9px', color: s.isBase ? 'rgba(244,240,237,0.55)' : C.lightClay, marginTop: '4px' }}>Annual Labour Saving</div>
             </div>
             <div style={{ marginBottom: '18px' }}>
               <div style={{ fontFamily: F.main, fontSize: '26px', lineHeight: 1, color: s.isBase ? C.parchment : C.obsidian }}>{s.paybackMonths.toFixed(1)} mo</div>
-              <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: s.isBase ? 'rgba(244,240,237,0.55)' : C.lightClay, marginTop: '4px' }}>Simple Payback</div>
+              <div style={{ fontFamily: F.main, fontSize: '9px', color: s.isBase ? 'rgba(244,240,237,0.55)' : C.lightClay, marginTop: '4px' }}>Simple Payback</div>
             </div>
             <div style={{ height: '1px', background: s.isBase ? 'rgba(244,240,237,0.2)' : 'rgba(34,25,12,0.1)', margin: '0 0 14px' }} />
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginBottom: '14px' }}>
@@ -814,7 +998,6 @@ function S08({ calc }) {
   return (
     <Wrap justify="flex-start" section="The Solution">
       <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>The Solution</div>
-      <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
       <div style={{ fontFamily: F.main, fontSize: '22px', color: C.obsidian, marginBottom: '18px' }}>Investment Required</div>
       <div style={{ display: 'flex', gap: '16px', flex: 1 }}>
         {proposals.map((p) => {
@@ -833,11 +1016,11 @@ function S08({ calc }) {
               position: 'relative',
             }}>
               {isRec && (
-                <div style={{ position: 'absolute', top: '-11px', left: '18px', background: C.red, borderRadius: '3px', padding: '2px 10px', fontFamily: F.main, fontSize: '9px', letterSpacing: '2px', color: C.parchment }}>
+                <div style={{ position: 'absolute', top: '-11px', left: '18px', background: C.red, borderRadius: '3px', padding: '2px 10px', fontFamily: F.main, fontSize: '9px', color: C.parchment }}>
                   Recommended
                 </div>
               )}
-              <div style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '2px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay, marginBottom: '2px' }}>{p.num}</div>
+              <div style={{ fontFamily: F.main, fontSize: '9px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay, marginBottom: '2px' }}>{p.num}</div>
               <div style={{ fontFamily: F.main, fontSize: '20px', color: isRec ? C.parchment : C.obsidian, marginBottom: '4px' }}>{p.name}</div>
               <div style={{ height: '1px', background: isRec ? 'rgba(244,240,237,0.2)' : 'rgba(34,25,12,0.12)', margin: '10px 0' }} />
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '5px', marginBottom: '14px' }}>
@@ -863,15 +1046,15 @@ function S08({ calc }) {
               </div>
               <div style={{ background: isRec ? 'rgba(244,240,237,0.15)' : 'rgba(34,25,12,0.08)', borderRadius: '4px', padding: '10px 12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
-                  <span style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay }}>Year 1 Total</span>
+                  <span style={{ fontFamily: F.main, fontSize: '9px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay }}>Year 1 Total</span>
                   <span style={{ fontFamily: F.main, fontSize: '18px', color: isRec ? C.parchment : C.obsidian }}>${totalY1.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
-                  <span style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay }}>Year 2+</span>
+                  <span style={{ fontFamily: F.main, fontSize: '9px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay }}>Year 2+</span>
                   <span style={{ fontFamily: F.main, fontSize: '13px', color: isRec ? 'rgba(244,240,237,0.75)' : C.clay }}>${totalY2.toLocaleString()} / yr</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                  <span style={{ fontFamily: F.main, fontSize: '9px', letterSpacing: '1px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay }}>Base Payback</span>
+                  <span style={{ fontFamily: F.main, fontSize: '9px', color: isRec ? 'rgba(244,240,237,0.55)' : C.lightClay }}>Base Payback</span>
                   <span style={{ fontFamily: F.main, fontSize: '13px', color: isRec ? 'rgba(244,240,237,0.75)' : C.clay }}>{payback} mo</span>
                 </div>
               </div>
@@ -961,7 +1144,7 @@ function S09() {
       </div>
 
       <div style={{ background: C.white, border: '1.5px solid #000', borderRadius: '4px', padding: '14px 22px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '2px', color: '#000' }}>Next step</div>
+        <div style={{ fontFamily: F.main, fontSize: '10px', color: '#000' }}>Next step</div>
         <div style={{ width: '1px', height: '18px', background: 'rgba(0,0,0,0.25)' }} />
         <div style={{ fontFamily: F.main, fontSize: '17px', color: '#000' }}>Begin development of solution when letter of engagement signed</div>
       </div>
@@ -981,7 +1164,7 @@ function S10() {
     }}>
       {/* Top bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.7)' }}>
+        <div style={{ fontFamily: F.main, fontSize: '10px', color: 'rgba(244,240,237,0.7)' }}>
           Queensland Steel House Frames
         </div>
         <img src={`${import.meta.env.BASE_URL}clearai-logo.png`} alt="ClearAI" style={{ height: '22px' }} />
@@ -1002,8 +1185,8 @@ function S10() {
 
       {/* Bottom bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.55)' }}>
-          AI Drafting Copy Agent — Proposal 25-03-2026
+        <div style={{ fontFamily: F.main, fontSize: '10px', color: 'rgba(244,240,237,0.55)' }}>
+          AI Drafting Copy Agent — Proposal 09-04-2026
         </div>
         <DotIcon size={13} gap={0} color={C.red} />
       </div>
@@ -1023,7 +1206,6 @@ function S11() {
   return (
     <Wrap justify="flex-start" section="Appendix">
       <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>Appendix</div>
-      <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
       <div style={{ fontFamily: F.main, fontSize: '24px', color: C.obsidian, marginBottom: '36px' }}>Workflow of the Solution</div>
       <div style={{ display: 'flex', alignItems: 'flex-start' }}>
         {steps.map((s, i) => (
@@ -1033,7 +1215,7 @@ function S11() {
             )}
             <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: C.clay, color: C.parchment, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: F.main, fontSize: '11px', fontWeight: 700, position: 'relative', zIndex: 1, marginBottom: '14px' }}>{s.num}</div>
             <div style={{ padding: '0 10px', textAlign: 'center' }}>
-              <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '1px', color: C.clay, marginBottom: '7px' }}>{s.title}</div>
+              <div style={{ fontFamily: F.main, fontSize: '10px', color: C.clay, marginBottom: '7px' }}>{s.title}</div>
               <div style={{ fontFamily: F.main, fontSize: '12px', color: C.obsidian, lineHeight: 1.5, opacity: 0.78 }}>{s.desc}</div>
             </div>
           </div>
@@ -1069,7 +1251,7 @@ function S12() {
       <thead>
         <tr>
           {['Category', 'Weight', 'Impact'].map((h, i) => (
-            <th key={i} style={{ padding: '9px 12px', background: C.obsidian, fontFamily: F.main, fontSize: '9px', letterSpacing: '1.5px', color: C.parchment, textAlign: i === 0 ? 'left' : 'center' }}>{h}</th>
+            <th key={i} style={{ padding: '9px 12px', background: C.obsidian, fontFamily: F.main, fontSize: '9px', color: C.parchment, textAlign: i === 0 ? 'left' : 'center' }}>{h}</th>
           ))}
         </tr>
       </thead>
@@ -1087,7 +1269,6 @@ function S12() {
   return (
     <Wrap justify="flex-start" section="Appendix">
       <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>Appendix</div>
-      <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
       <div style={{ fontFamily: F.main, fontSize: '24px', color: C.obsidian, marginBottom: '18px' }}>Weighting of Building Categories</div>
       <div style={{ display: 'flex', gap: '20px', flex: 1 }}>
         <div style={{ flex: 1 }}><Col rows={left} /></div>
@@ -1102,13 +1283,12 @@ function S13() {
   return (
     <Wrap justify="flex-start" section="Appendix">
       <div style={{ fontFamily: F.main, fontSize: '52px', lineHeight: 1.05, color: '#000', marginBottom: '16px' }}>Appendix</div>
-      <div style={{ height: '1px', background: 'rgba(0,0,0,0.12)', marginBottom: '20px' }} />
       <div style={{ fontFamily: F.main, fontSize: '24px', color: C.obsidian, marginBottom: '24px' }}>Further Assumptions — AI Search Costs</div>
       <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '24px' }}>
         <thead>
           <tr>
             {['Cost Component', 'Pricing Tier', 'Annual Total (AUD)', 'Purpose'].map((h, i) => (
-              <th key={i} style={{ padding: '10px 16px', background: C.obsidian, fontFamily: F.main, fontSize: '10px', letterSpacing: '1.5px', color: C.parchment, textAlign: i === 0 ? 'left' : 'center' }}>{h}</th>
+              <th key={i} style={{ padding: '10px 16px', background: C.obsidian, fontFamily: F.main, fontSize: '10px', color: C.parchment, textAlign: i === 0 ? 'left' : 'center' }}>{h}</th>
             ))}
           </tr>
         </thead>
@@ -1127,7 +1307,7 @@ function S13() {
         </tbody>
       </table>
       <div style={{ background: C.mid, borderRadius: '4px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '1.5px', color: C.clay }}>Total annual API cost</div>
+        <div style={{ fontFamily: F.main, fontSize: '10px', color: C.clay }}>Total annual API cost</div>
         <div style={{ fontFamily: F.main, fontSize: '24px', color: C.clay, fontWeight: 700 }}>$1,333.50 / year</div>
       </div>
     </Wrap>
@@ -1145,7 +1325,7 @@ function S14({ exportPDF }) {
       boxSizing: 'border-box',
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.7)' }}>
+        <div style={{ fontFamily: F.main, fontSize: '10px', color: 'rgba(244,240,237,0.7)' }}>
           Queensland Steel House Frames
         </div>
         <img src={`${import.meta.env.BASE_URL}clearai-logo.png`} alt="ClearAI" style={{ height: '22px' }} />
@@ -1161,18 +1341,17 @@ function S14({ exportPDF }) {
             background: C.red, color: C.parchment,
             border: 'none', borderRadius: '4px',
             padding: '14px 40px', cursor: 'pointer',
-            letterSpacing: '2px',
           }}
         >
           Export PDF
         </button>
-        <div style={{ fontFamily: F.main, fontSize: '12px', color: 'rgba(244,240,237,0.35)', letterSpacing: '1px' }}>
+        <div style={{ fontFamily: F.main, fontSize: '12px', color: 'rgba(244,240,237,0.35)' }}>
           Generates a PDF of all slides
         </div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ fontFamily: F.main, fontSize: '10px', letterSpacing: '3.5px', color: 'rgba(244,240,237,0.55)' }}>
-          AI Drafting Copy Agent — Proposal 25-03-2026
+        <div style={{ fontFamily: F.main, fontSize: '10px', color: 'rgba(244,240,237,0.55)' }}>
+          AI Drafting Copy Agent — Proposal 09-04-2026
         </div>
         <DotIcon size={13} gap={0} color={C.red} />
       </div>
@@ -1181,7 +1360,7 @@ function S14({ exportPDF }) {
 }
 
 /* ── MAIN COMPONENT ── */
-const SLIDES = [S00, S01, S02, S03, S04, S05, S06, S07, S08, S09, S10, S11, S12, S13]
+const SLIDES = [S00, SVC, S01, S02, S03, S04, S05, S06, S07, S08, S09, S10, S11, S12, S13]
 
 const QSHFPitchDeck = forwardRef(function QSHFPitchDeck(_props, ref) {
   const [slide, setSlide] = useState(0)
@@ -1287,7 +1466,7 @@ const QSHFPitchDeck = forwardRef(function QSHFPitchDeck(_props, ref) {
           ))}
         </div>
 
-        <div style={{ fontFamily: F.main, fontSize: '10px', color: 'rgba(244,240,237,0.4)', letterSpacing: '1px' }}>
+        <div style={{ fontFamily: F.main, fontSize: '10px', color: 'rgba(244,240,237,0.4)' }}>
           {String(slide + 1).padStart(2, '0')} / {String(TOTAL).padStart(2, '0')}
         </div>
 
