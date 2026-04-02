@@ -148,7 +148,7 @@ function S00() {
     }}>
       {/* Top bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ fontFamily: F.main, fontSize: '10px', color: 'rgba(244,240,237,0.7)' }}>
+        <div style={{ fontFamily: F.main, fontSize: '14px', color: 'rgba(244,240,237,0.7)' }}>
           Queensland Steel House Frames
         </div>
         <img src={`${import.meta.env.BASE_URL}clearai-logo.png`} alt="ClearAI" style={{ height: '22px' }} />
@@ -170,7 +170,7 @@ function S00() {
 
       {/* Bottom bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ fontFamily: F.main, fontSize: '10px', color: 'rgba(244,240,237,0.55)' }}>
+        <div style={{ fontFamily: F.main, fontSize: '14px', color: 'rgba(244,240,237,0.55)' }}>
           Proposal 09-04-2026
         </div>
         <DotIcon size={13} gap={0} color={C.red} />
@@ -415,14 +415,16 @@ function SVC() {
               ))
             })}
 
-            {/* Green tick badge on Signing (index 5) */}
-            <g transform={`translate(${xs[5] + BW - 4}, ${BY - 4})`}>
-              <circle cx={0} cy={0} r={9} fill="#27ae60" />
-              <polyline points="-4,0 -1,4 5,-4"
-                stroke="white" strokeWidth={2} fill="none"
-                strokeLinecap="round" strokeLinejoin="round"
-              />
-            </g>
+            {/* Green tick badges on Signing (index 5) and Send (index 6) */}
+            {[5, 6].map(i => (
+              <g key={i} transform={`translate(${xs[i] + BW - 4}, ${BY - 4})`}>
+                <circle cx={0} cy={0} r={9} fill="#27ae60" />
+                <polyline points="-4,0 -1,4 5,-4"
+                  stroke="white" strokeWidth={2} fill="none"
+                  strokeLinecap="round" strokeLinejoin="round"
+                />
+              </g>
+            ))}
 
           </svg>
         </div>
